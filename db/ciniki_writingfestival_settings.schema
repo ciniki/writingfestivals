@@ -1,0 +1,33 @@
+#
+# Description
+# -----------
+# This table stores the settings for each writing festival. This format is used
+# to allow the easy addition of new settings over time.
+#
+# Fields
+# ------
+# id:                   The ID assigned to the setting.
+# uuid:                 The Universal Unique ID.
+# tnid:                 The ID of the tenant.
+#
+# festival_id:          The ID of the festival the setting is for.
+#
+# detail_key:           The unique key for the settings.
+# detail_value:         The value stored for this key.
+# 
+# date_added:           The UTC date and time the record was added.
+# last_updated:         The UTC date and time the record was last updated.
+#
+create table ciniki_writingfestival_settings (
+    id int not null auto_increment,
+    uuid char(36) not null,
+    tnid int not null,
+    festival_id int not null,
+    detail_key varchar(50) not null,
+    detail_value varchar(6000) not null,
+    date_added datetime not null,
+    last_updated datetime not null,
+    primary key (id),
+    unique index (tnid, festival_id, detail_key),
+    index sync (tnid, uuid, last_updated)
+) ENGINE='InnoDB', COMMENT='v1.01';

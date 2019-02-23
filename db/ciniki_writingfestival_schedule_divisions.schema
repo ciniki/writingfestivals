@@ -1,0 +1,39 @@
+#
+# Description
+# -----------
+# This table stores the schedule divisions for the festival sections. Timeslots are level below divisions.
+#
+# Fields
+# ------
+# id:                   The ID assigned to the category.
+# uuid:                 The Universal Unique ID.
+# tnid:                 The tenant the category is attached to.
+#
+# festival_id:          The festival the category is for.
+# ssection_id:          The schedule_section the category is for.
+#
+# name:                 The name for the category.
+#
+# division_date:        The date for the division.
+#
+# address:              The address for the division.
+#
+# date_added:           The UTC date and time the record was added.
+# last_updated:         The UTC date and time the record was last updated.
+#
+create table ciniki_writingfestival_schedule_divisions (
+    id int not null auto_increment,
+    uuid char(36) not null,
+    tnid int not null,
+    festival_id int not null,
+    ssection_id int not null,
+    name varchar(150) not null,
+    division_date date not null,
+    address varchar(250) not null,
+    date_added datetime not null,
+    last_updated datetime not null,
+    primary key (id),
+    unique index (uuid),
+    index (festival_id, ssection_id),
+    index tenant_uuid (tnid, uuid, last_updated)
+) ENGINE='InnoDB', COMMENT='v1.01';

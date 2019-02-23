@@ -1,0 +1,103 @@
+#
+# Description
+# -----------
+# This table stores the registrations for a writing festival
+#
+# Fields
+# ------
+# id:                   The ID assigned to the adjudicator.
+# uuid:                 The Universal Unique ID.
+# tnid:                 The tenant the adjudicator is attached to.
+#
+# festival_id:          The festival the adjudicator is attached to.
+#
+# teacher_customer_id:  The ID of the customer who is the teacher for this registration or conductor of ensemble.
+#
+# billing_customer_id:  The ID of the customer the billing is attached to. **future**
+#
+# rtype:                The type of registration.
+#
+#                           30 - Individual
+#                           50 - Duet
+#                           60 - Trio
+#                           90 - Ensemble
+#
+# status:               The current status of the registration.
+#
+#                            5 - Draft (online)
+#                            6 - Cart (online)
+#                           10 - Applied
+#                           50 - Paid
+#
+# invoice_id:           The ID of the invoice in ciniki.sapos if paid online.
+#
+# display_name:         Individuals, this field is ignored. 
+#                       Duet & Trio the name for certificates, programs etc goes here. 
+#                       Ensembles, the name of the group goes here.
+#
+# public_name:          The name to use for the PDF of the schedule, first initials and last names.
+#
+# competitor1_id:       The individual competitor, or first person of a duet/trio/ensemble.
+# competitor2_id:       The second person of a duet/trio/ensemble.
+# competitor3_id:       The third person of a trio/ensemble.
+# competitor4_id:       The fourth person of a ensemble.
+# competitor5_id:       The fifth person of a ensemble.
+#
+# class_id:             The class the registration is for.
+#
+# timeslot_id:          The ID of the time this registration is attached to, If the timeslot is a partial registration list.
+# 
+# title:                The title and composer of the piece they will perform.
+#
+# word_count:           The word count of the submission.
+#
+# fee:                  The entry fee for the registration.
+#
+# payment_type:         The type of payment.
+#
+#                           10 - Paypal
+#                           20 - Square
+#                           50 - Visa
+#                           55 - Mastercard
+#                           100 - Cash
+#                           105 - Cheque
+#                           110 - Email Transfer
+#                           120 - Other
+#                           121 - Paid Online
+#
+# notes:                Any notes for the registration.
+#
+# date_added:           The UTC date and time the record was added.
+# last_updated:         The UTC date and time the record was last updated.
+#
+create table ciniki_writingfestival_registrations (
+    id int not null auto_increment,
+    uuid char(36) not null,
+    tnid int not null,
+    festival_id int not null,
+    teacher_customer_id int not null,
+    billing_customer_id int not null,
+    rtype tinyint unsigned not null,
+    status tinyint unsigned not null,
+    invoice_id int not null,
+    display_name varchar(250) not null,
+    public_name varchar(250) not null,
+    competitor1_id int not null,
+    competitor2_id int not null,
+    competitor3_id int not null,
+    competitor4_id int not null,
+    competitor5_id int not null,
+    class_id int not null,
+    timeslot_id int not null,
+    title varchar(250) not null,
+    word_count varchar(50) not null,
+    fee decimal(19,4) not null, 
+    payment_type tinyint unsigned not null,
+    notes varchar(5000) not null,
+    date_added datetime not null,
+    last_updated datetime not null,
+    primary key (id),
+    unique index (uuid),
+    index (festival_id, teacher_customer_id, billing_customer_id),
+    index tenant_uuid (tnid, uuid, last_updated)
+) ENGINE='InnoDB', COMMENT='v1.01';

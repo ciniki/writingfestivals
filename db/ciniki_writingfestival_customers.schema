@@ -1,0 +1,38 @@
+#
+# Description
+# -----------
+# This table stores any customers who have logged into the web interface to setup registrations, 
+# and the type of customer: Parent, Teacher or Self Registered.
+#
+# Fields
+# ------
+# id:                   The ID assigned to the competitor.
+# uuid:                 The Universal Unique ID.
+# tnid:                 The ID of the tenant the competitor is attached to.
+#
+# festival_id:          The ID of the festival the competitor is attached to.
+#
+# customer_id:          The ID of the customer in ciniki.customers module.
+#
+# ctype:                The type of customer.
+#
+#                           10 - Parent
+#                           20 - Teacher
+#                           30 - Self (registered themselves)
+#
+# date_added:           The UTC date and time the record was added.
+# last_updated:         The UTC date and time the record was last updated.
+#
+create table ciniki_writingfestival_customers (
+    id int not null auto_increment,
+    uuid char(36) not null,
+    tnid int not null,
+    festival_id int not null,
+    customer_id int not null,
+    ctype tinyint unsigned not null,
+    date_added datetime not null,
+    last_updated datetime not null,
+    primary key (id),
+    unique index (uuid),
+    index sync (tnid, uuid, last_updated)
+) ENGINE='InnoDB', COMMENT='v1.01';

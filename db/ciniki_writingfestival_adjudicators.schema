@@ -1,0 +1,34 @@
+#
+# Description
+# -----------
+# This table stores the adjudicators for writing festivals. Each adjudicator must also have a record in the customers module.
+#
+# Fields
+# ------
+# id:                   The ID assigned to the adjudicator.
+# uuid:                 The Universal Unique ID.
+# tnid:                 The tenant the adjudicator is attached to.
+#
+# festival_id:          The festival the adjudicator is attached to.
+#
+# customer_id:          The ID of the customer who is the adjudicator.
+#
+# flags:                The options for the adjudicator.
+#
+# date_added:           The UTC date and time the record was added.
+# last_updated:         The UTC date and time the record was last updated.
+#
+create table ciniki_writingfestival_adjudicators (
+    id int not null auto_increment,
+    uuid char(36) not null,
+    tnid int not null,
+    festival_id int not null,
+    customer_id int not null,
+    flags tinyint unsigned not null,
+    date_added datetime not null,
+    last_updated datetime not null,
+    primary key (id),
+    unique index (uuid),
+    unique index (festival_id, customer_id),
+    index tenant_uuid (tnid, uuid, last_updated)
+) ENGINE='InnoDB', COMMENT='v1.01';

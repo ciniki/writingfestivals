@@ -1,0 +1,48 @@
+#
+# Description
+# -----------
+# This table stores the time slots for the schedule.
+#
+# Fields
+# ------
+# id:                   The ID assigned to the time slot.
+# uuid:                 The Universal Unique ID.
+# tnid:                 The tenant the time slot is attached to.
+#
+# festival_id:          The festival the time slot is for.
+# division_id:          The schedule_division the time slot is for.
+#
+# slot_time:            The time for the slot on the division date.
+#
+# class_id:             The class that is in this time slot.
+#
+# flags:                The options for this timeslot.
+#
+#                           0x01 - Partial Registration List, registrations are linked by timeslot_id in registrations table.
+#
+# name:                 The name for the category.
+# description:          The longer text description of the category.
+#
+# date_added:           The UTC date and time the record was added.
+# last_updated:         The UTC date and time the record was last updated.
+#
+create table ciniki_writingfestival_schedule_timeslots (
+    id int not null auto_increment,
+    uuid char(36) not null,
+    tnid int not null,
+    festival_id int not null,
+    sdivision_id int not null,
+    slot_time time not null,
+    class1_id int not null,
+    class2_id int not null,
+    class3_id int not null,
+    flags tinyint unsigned not null,
+    name varchar(150) not null,
+    description varchar(250) not null,
+    date_added datetime not null,
+    last_updated datetime not null,
+    primary key (id),
+    unique index (uuid),
+    index (festival_id, sdivision_id, class1_id, class2_id, class3_id),
+    index tenant_uuid (tnid, uuid, last_updated)
+) ENGINE='InnoDB', COMMENT='v1.01';

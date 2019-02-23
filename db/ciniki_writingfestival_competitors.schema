@@ -1,0 +1,66 @@
+#
+# Description
+# -----------
+# This table stores the competitors for a writing festival
+#
+# Fields
+# ------
+# id:                   The ID assigned to the competitor.
+# uuid:                 The Universal Unique ID.
+# tnid:                 The tenant the competitor is attached to.
+#
+# festival_id:          The festival the competitor is attached to.
+# billing_customer_id:  The ID of the customer who added the competitor record.
+#                       This is the same as in the registrations so we know who
+#                       "owns" this competitor and has rights to change their information.
+#
+# name:                 The name of the competitor.
+# public_name:          The public name of the competitor, should only be set when auto generator is incorrect.
+#
+# flags:                The options for the competitor.
+#
+#                           0x01 - Waiver signed
+#                           0x02 - 
+#                           0x04 - 
+#                           0x08 - 
+#
+# parent:               The name of the parent.
+# address:              The address for the competitor.
+# city:                 The city for the competitor.
+# province:             The province for the competitor.
+# postal:               The postal/zip code for the competitor
+# phone_home:           The home phone number for the competitor.
+# phone_cell:           The cell phone of the competitor.
+# email:                The email address of the competitor.
+# age:                  The age of the competitor.
+# 
+# notes:                Any notes for the competitor.
+#
+# date_added:           The UTC date and time the record was added.
+# last_updated:         The UTC date and time the record was last updated.
+#
+create table ciniki_writingfestival_competitors (
+    id int not null auto_increment,
+    uuid char(36) not null,
+    tnid int not null,
+    festival_id int not null,
+    billing_customer_id int not null,
+    name varchar(250) not null,
+    public_name varchar(250) not null,
+    flags smallint unsigned not null,
+    parent varchar(250) not null,
+    address varchar(250) not null,
+    city varchar(250) not null,
+    province varchar(250) not null,
+    postal varchar(250) not null,
+    phone_home varchar(250) not null,
+    phone_cell varchar(250) not null,
+    email varchar(250) not null,
+    age varchar(25) not null,
+    notes varchar(5000) not null,
+    date_added datetime not null,
+    last_updated datetime not null,
+    primary key (id),
+    unique index (uuid),
+    index tenant_uuid (tnid, uuid, last_updated)
+) ENGINE='InnoDB', COMMENT='v1.01';
