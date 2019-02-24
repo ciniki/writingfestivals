@@ -41,7 +41,7 @@
 #
 # log_date:             The UTC date and time the change happened.
 #
-create table ciniki_writingfestivals_history (
+create table ciniki_writingfestival_history (
         id bigint not null auto_increment,
         uuid char(36) not null,
         tnid int not null,
