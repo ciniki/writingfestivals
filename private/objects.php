@@ -32,7 +32,7 @@ function ciniki_writingfestivals_objects($ciniki) {
             'document_header_msg'=>array('name'=>'Document Header Message', 'default'=>''),
             'document_footer_msg'=>array('name'=>'Document Footer Message', 'default'=>''),
             ),
-        'history_table'=>'ciniki_writingfestivals_history',
+        'history_table'=>'ciniki_writingfestival_history',
         );
     $objects['customer'] = array(
         'name' => 'Customer',
@@ -45,7 +45,7 @@ function ciniki_writingfestivals_objects($ciniki) {
             'customer_id' => array('name'=>'Customer', 'ref'=>'ciniki.customers.customer'),
             'ctype' => array('name'=>'Type', 'default'=>'0'),
             ),
-        'history_table' => 'ciniki_writingfestivals_history',
+        'history_table' => 'ciniki_writingfestival_history',
         );
     $objects['adjudicator'] = array(
         'name'=>'Adjudicator',
@@ -57,7 +57,7 @@ function ciniki_writingfestivals_objects($ciniki) {
             'festival_id'=>array('name'=>'Festival', 'ref'=>'ciniki.writingfestivals.festival'),
             'customer_id'=>array('name'=>'Customer', 'ref'=>'ciniki.customers.customer'),
             ),
-        'history_table'=>'ciniki_writingfestivals_history',
+        'history_table'=>'ciniki_writingfestival_history',
         );
     $objects['section'] = array(
         'name'=>'Section',
@@ -74,7 +74,7 @@ function ciniki_writingfestivals_objects($ciniki) {
             'synopsis'=>array('name'=>'Synopsis', 'default'=>''),
             'description'=>array('name'=>'Description', 'default'=>''),
             ),
-        'history_table'=>'ciniki_writingfestivals_history',
+        'history_table'=>'ciniki_writingfestival_history',
         );
     $objects['category'] = array(
         'name'=>'Category',
@@ -92,7 +92,7 @@ function ciniki_writingfestivals_objects($ciniki) {
             'synopsis'=>array('name'=>'Synopsis', 'default'=>''),
             'description'=>array('name'=>'Description', 'default'=>''),
             ),
-        'history_table'=>'ciniki_writingfestivals_history',
+        'history_table'=>'ciniki_writingfestival_history',
         );
     $objects['class'] = array(
         'name'=>'Class',
@@ -111,7 +111,7 @@ function ciniki_writingfestivals_objects($ciniki) {
             'earlybird_fee'=>array('name'=>'Earlybird Fee', 'type'=>'currency', 'default'=>'0'),
             'fee'=>array('name'=>'Fee', 'type'=>'currency', 'default'=>'0'),
             ),
-        'history_table'=>'ciniki_writingfestivals_history',
+        'history_table'=>'ciniki_writingfestival_history',
         );
     $objects['file'] = array(
         'name'=>'File',
@@ -129,7 +129,7 @@ function ciniki_writingfestivals_objects($ciniki) {
             'org_filename'=>array('name'=>'Original Filename', 'default'=>''),
             'publish_date'=>array('name'=>'Publish Date', 'default'=>''),
             ),
-        'history_table'=>'ciniki_writingfestivals_history',
+        'history_table'=>'ciniki_writingfestival_history',
         );
     $objects['competitor'] = array(
         'name'=>'Competitor',
@@ -156,7 +156,7 @@ function ciniki_writingfestivals_objects($ciniki) {
 //            'instrument'=>array('name'=>'Instrument', 'default'=>''),
             'notes'=>array('name'=>'Notes', 'default'=>''),
             ),
-        'history_table'=>'ciniki_writingfestivals_history',
+        'history_table'=>'ciniki_writingfestival_history',
         );
     $objects['registration'] = array(
         'name'=>'Registration',
@@ -186,7 +186,7 @@ function ciniki_writingfestivals_objects($ciniki) {
             'payment_type'=>array('name'=>'Payment Type', 'default'=>'0'),
             'notes'=>array('name'=>'Notes', 'default'=>''),
             ),
-        'history_table'=>'ciniki_writingfestivals_history',
+        'history_table'=>'ciniki_writingfestival_history',
         );
     $objects['schedulesection'] = array(
         'name'=>'Schedule Section',
@@ -201,7 +201,7 @@ function ciniki_writingfestivals_objects($ciniki) {
             'adjudicator2_id'=>array('name'=>'Second Adjudicator', 'id'=>'ciniki.writingfestivals.adjudicator', 'default'=>'0'),
             'adjudicator3_id'=>array('name'=>'Third Adjudicator', 'id'=>'ciniki.writingfestivals.adjudicator', 'default'=>'0'),
             ),
-        'history_table'=>'ciniki_writingfestivals_history',
+        'history_table'=>'ciniki_writingfestival_history',
         );
     $objects['scheduledivision'] = array(
         'name'=>'Schedule Division',
@@ -216,7 +216,7 @@ function ciniki_writingfestivals_objects($ciniki) {
             'division_date'=>array('name'=>'Date'),
             'address'=>array('name'=>'Address', 'default'=>''),
             ),
-        'history_table'=>'ciniki_writingfestivals_history',
+        'history_table'=>'ciniki_writingfestival_history',
         );
     $objects['scheduletimeslot'] = array(
         'name'=>'Schedule Time Slot',
@@ -235,7 +235,7 @@ function ciniki_writingfestivals_objects($ciniki) {
             'description'=>array('name'=>'Description', 'default'=>''),
             'flags'=>array('name'=>'Options', 'default'=>'0'),
             ),
-        'history_table'=>'ciniki_writingfestivals_history',
+        'history_table'=>'ciniki_writingfestival_history',
         );
     $objects['setting'] = array(
         'name' => 'Setting',
@@ -248,7 +248,7 @@ function ciniki_writingfestivals_objects($ciniki) {
             'detail_key' => array('name'=>'Key'),
             'detail_value' => array('name'=>'Value', 'default'=>''),
             ),
-        'history_table' => 'ciniki_writingfestivals_history',
+        'history_table' => 'ciniki_writingfestival_history',
         );
     
     return array('stat'=>'ok', 'objects'=>$objects);
