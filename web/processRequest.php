@@ -407,7 +407,7 @@ function ciniki_writingfestivals_web_processRequest(&$ciniki, $settings, $tnid, 
                     return $rc;
                 }
                 $customer = $rc['customer'];
-                $page['blocks'][] = array('type'=>'content', 'section'=>'content', 'title'=>$customer['display_name'], 
+                $page['blocks'][] = array('type'=>'content', 'section'=>'section', 'title'=>$customer['display_name'], 
                     'aside_image_id'=>(isset($customer['image_id']) && $customer['image_id'] > 0  ? $customer['image_id'] : 0),
                     'html'=>$customer['processed_description']);
 //                if( isset($customer['image_id']) && $customer['image_id'] > 0 ) {
