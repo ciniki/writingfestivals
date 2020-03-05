@@ -153,7 +153,7 @@ function ciniki_writingfestivals_web_processRequest(&$ciniki, $settings, $tnid, 
     //
     if( isset($args['uri_split'][0]) && $args['uri_split'][0] == 'download' && isset($args['uri_split'][1]) && $args['uri_split'][1] != '' ) {
         ciniki_core_loadMethod($ciniki, 'ciniki', 'writingfestivals', 'web', 'fileDownload');
-        $rc = ciniki_writingfestivals_web_fileDownload($ciniki, $ciniki['request']['tnid'], $festival_id, $ciniki['request']['uri_split'][1]);
+        $rc = ciniki_writingfestivals_web_fileDownload($ciniki, $ciniki['request']['tnid'], $festival_id, $args['uri_split'][1]);
         if( $rc['stat'] == 'ok' ) {
             header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
             header("Last-Modified: " . gmdate("D,d M YH:i:s") . " GMT");
