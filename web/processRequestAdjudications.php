@@ -292,7 +292,7 @@ function ciniki_writingfestivals_web_processRequestAdjudications(&$ciniki, $sett
 
             $content .= '<div class="registration wide">'
                 . '<b>Class: </b>' . $registration['class_name'] . '<br/>'
-                . '<b>Participant: </b>' . $registration['name'] . '<br/>'
+//                . '<b>Participant: </b>' . $registration['name'] . '<br/>'
                 . ($registration['title'] != '' ? '<b>Title: </b>' . $registration['title'] . '<br/>' : '')
                 . '<b>PDF: </b><a target="_blank" href="' . $base_url . '/' . $registration['uuid'] . '/writing">' . $registration['pdf_filename'] . '</a><br/>'
                 . '';
