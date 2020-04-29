@@ -132,6 +132,27 @@ function ciniki_writingfestivals_web_processRequest(&$ciniki, $settings, $tnid, 
     }
 
     //
+    // Check if customer is logged in and an adjudicator
+    //
+    $adjudicator = 'no';
+    if( isset($ciniki['session']['customer']['id']) && $ciniki['session']['customer']['id'] > 0 ) {
+        $strsql = "SELECT id "  
+            . "FROM ciniki_writingfestival_adjudicators "
+            . "WHERE festival_id = '" . ciniki_core_dbQuote($ciniki, $festival_id) . "' "
+            . "AND customer_id = '" . ciniki_core_dbQuote($ciniki, $ciniki['session']['customer']['id']) . "' "
+            . "AND tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
+            . "";
+        $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.writingfestivals', 'adjudicator');
+        if( $rc['stat'] != 'ok' ) {
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.163', 'msg'=>'Unable to load adjudicator', 'err'=>$rc['err']));
+        }
+        if( isset($rc['adjudicator']['id']) ) {
+            $adjudicator = 'yes';
+            $adjudicator_id = $rc['adjudicator']['id'];
+        }
+    }
+
+    //
     // Get the sponsors for the festival
     //
     if( isset($ciniki['tenant']['modules']['ciniki.sponsors']) 
@@ -189,6 +210,9 @@ function ciniki_writingfestivals_web_processRequest(&$ciniki, $settings, $tnid, 
             $adjudicator_permalink = $uri_split[0];
         } elseif( $uri_split[0] == 'registrations' ) {
             $display = 'registrations';
+            array_shift($uri_split); 
+        } elseif( $uri_split[0] == 'adjudications' ) {
+            $display = 'adjudications';
             array_shift($uri_split); 
         } else {
             $strsql = "SELECT id, name, permalink, primary_image_id AS image_id, synopsis, description "
@@ -275,6 +299,33 @@ function ciniki_writingfestivals_web_processRequest(&$ciniki, $settings, $tnid, 
             'settings' => $festival['settings'],
             'base_url' => $args['base_url'] . '/registrations',
             'ssl_domain_base_url' => $args['ssl_domain_base_url'] . '/registrations',
+            ));
+        if( $rc['stat'] != 'ok' ) {
+            return $rc;
+        }
+        if( isset($rc['blocks']) ) {
+            foreach($rc['blocks'] as $block) {
+                $page['blocks'][] = $block;
+            }
+        }
+    }
+
+    //
+    // Display the adjudications page
+    //
+    elseif( $display == 'adjudications' && $adjudicator == 'yes' ) {
+        $page['breadcrumbs'][] = array('name'=>'Adjudications', 'url'=>$args['base_url'] . '/adjudications');
+
+        ciniki_core_loadMethod($ciniki, 'ciniki', 'writingfestivals', 'web', 'processRequestAdjudications');
+        $rc = ciniki_writingfestivals_web_processRequestAdjudications($ciniki, $settings, $tnid, array(
+            'uri_split' => $uri_split,
+            'adjudicator_id' => $adjudicator_id,
+            'festival_id' => $festival_id,
+            'festival_flags' => $festival['flags'],
+            'earlybird' => $festival['earlybird'],
+            'settings' => $festival['settings'],
+            'base_url' => $args['base_url'] . '/adjudications',
+            'ssl_domain_base_url' => $args['ssl_domain_base_url'] . '/adjudications',
             ));
         if( $rc['stat'] != 'ok' ) {
             return $rc;
@@ -450,7 +501,11 @@ function ciniki_writingfestivals_web_processRequest(&$ciniki, $settings, $tnid, 
     }
     $page['submenu']['adjudicators'] = array('name'=>'Adjudicators', 'url'=>$args['base_url'] . '/adjudicators');
     if( isset($ciniki['session']['customer']['id']) ) {
-        $page['submenu']['registrations'] = array('name'=>'Registrations', 'url'=>$args['base_url'] . '/registrations');
+        if( $adjudicator == 'yes' ) {
+            $page['submenu']['adjudications'] = array('name'=>'Adjudications', 'url'=>$args['base_url'] . '/adjudications');
+        } else {
+            $page['submenu']['registrations'] = array('name'=>'Registrations', 'url'=>$args['base_url'] . '/registrations');
+        }
     }
 
     return array('stat'=>'ok', 'page'=>$page);

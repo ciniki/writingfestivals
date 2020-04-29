@@ -153,12 +153,12 @@ function ciniki_writingfestivals_main() {
             'visible':function() {return M.ciniki_writingfestivals_main.festival.sections._tabs.selected=='registrations'?'yes':'no';},
             'hint':'Search',
             'noData':'No registrations found',
-            'headerValues':['Class', 'Registrant', 'Teacher', 'Fee', 'Status'],
+            'headerValues':['Class', 'Registrant', 'pdf_filename', 'Fee', 'Status'],
             'cellClasses':['', '', '', '', ''],
             },
         'registrations':{'label':'Registrations', 'type':'simplegrid', 'num_cols':5,
             'visible':function() { return M.ciniki_writingfestivals_main.festival.sections._tabs.selected == 'registrations' ? 'yes' : 'no'; },
-            'headerValues':['Class', 'Registrant', 'Teacher', 'Fee', 'Status', ''],
+            'headerValues':['Class', 'Registrant', 'PDF', 'Fee', 'Status', ''],
             'sortable':'yes',
             'sortTypes':['text', 'text', 'text', 'altnumber', 'altnumber', ''],
             'cellClasses':['', '', '', '', '', 'alignright'],
@@ -270,7 +270,7 @@ function ciniki_writingfestivals_main() {
             switch(j) {
                 case 0: return d.class_code;
                 case 1: return d.display_name;
-                case 2: return d.teacher_name;
+                case 2: return d.pdf_filename;
                 case 3: return '$' + d.fee;
                 case 4: return d.status_text;
             }
@@ -308,7 +308,7 @@ function ciniki_writingfestivals_main() {
             switch (j) {
                 case 0: return d.class_code;
                 case 1: return d.display_name;
-                case 2: return d.teacher_name;
+                case 2: return d.pdf_filename;
                 case 3: return '$' + d.fee;
                 case 4: return d.status_text;
             }
@@ -539,6 +539,7 @@ function ciniki_writingfestivals_main() {
             'end_date':{'label':'End', 'type':'date'},
             'status':{'label':'Status', 'type':'toggle', 'toggles':{'10':'Active', '30':'Published', '60':'Archived'}},
             'flags1':{'label':'Online Registrations', 'type':'flagtoggle', 'default':'off', 'bit':0x01, 'field':'flags'},
+            'flags2':{'label':'Virtual Event', 'type':'flagtoggle', 'default':'off', 'bit':0x02, 'field':'flags'},
             'earlybird_date':{'label':'Earlybird End', 'type':'date'},
             }},
         '_settings':{'label':'', 'aside':'yes', 'fields':{
@@ -1043,7 +1044,7 @@ function ciniki_writingfestivals_main() {
     this.class.cellValue = function(s, i, j, d) {
         switch(j) {
             case 0: return d.display_name;
-            case 1: return d.teacher_name;
+            case 1: return d.pdf_filename;
             case 2: return d.status_text;
         }
     }
@@ -1226,13 +1227,13 @@ function ciniki_writingfestivals_main() {
                     'editFn':'M.ciniki_writingfestivals_main.registration.addCompetitor(5);',
                     },
             }}, */
-        'teacher_details':{'label':'Teacher', 'type':'simplegrid', 'num_cols':2,
+/*        'teacher_details':{'label':'Teacher', 'type':'simplegrid', 'num_cols':2,
             'cellClasses':['label', ''],
             'addTxt':'Edit',
             'addFn':'M.startApp(\'ciniki.customers.edit\',null,\'M.ciniki_writingfestivals_main.registration.updateTeacher();\',\'mc\',{\'next\':\'M.ciniki_writingfestivals_main.registration.updateTeacher\',\'customer_id\':M.ciniki_writingfestivals_main.registration.teacher_customer_id});',
             'changeTxt':'Change',
             'changeFn':'M.startApp(\'ciniki.customers.edit\',null,\'M.ciniki_writingfestivals_main.registration.updateTeacher();\',\'mc\',{\'next\':\'M.ciniki_writingfestivals_main.registration.updateTeacher\',\'customer_id\':0});',
-            },
+            }, */
         '_class':{'label':'', 'fields':{
             'status':{'label':'Status', 'required':'yes', 'type':'toggle', 'toggles':{'5':'Draft', '10':'Applied', '50':'Paid'}},
             'payment_type':{'label':'Payment', 'type':'toggle', 'toggles':{'20':'Square', '50':'Visa', '55':'Mastercard', '100':'Cash', '105':'Cheque', '110':'Email', '120':'Other', '121':'Online'}},
@@ -1243,6 +1244,19 @@ function ciniki_writingfestivals_main() {
             'word_count':{'label':'Word Count', 'type':'text', 'size':'small'},
 //            'earlybird_fee':{'label':'Earlybird Fee', 'type':'text', 'size':'small'},
             'fee':{'label':'Fee', 'type':'text', 'size':'small'},
+            }},
+        'pdf_buttons':{'label':'', 
+            'visible':function() { return (M.ciniki_writingfestivals_main.festival.data.flags&0x02) == 0x02 ? 'yes' : 'no'},
+            'buttons':{
+                'add':{'label':'Upload Music PDF', 'fn':'M.ciniki_writingfestivals_main.registration.uploadPDF();',
+                    'visible':function() { return M.ciniki_writingfestivals_main.registration.data.pdf_filename == '' ? 'yes' : 'no'},
+                    },
+                'upload':{'label':'Replace Music PDF', 'fn':'M.ciniki_writingfestivals_main.registration.uploadPDF();',
+                    'visible':function() { return M.ciniki_writingfestivals_main.registration.data.pdf_filename != '' ? 'yes' : 'no'},
+                    },
+                'download':{'label':'Download PDF', 'fn':'M.ciniki_writingfestivals_main.registration.downloadPDF();',
+                    'visible':function() { return M.ciniki_writingfestivals_main.registration.data.pdf_filename != '' ? 'yes' : 'no'},
+                    },
             }},
         '_notes':{'label':'Notes', 'fields':{
             'notes':{'label':'', 'hidelabel':'yes', 'type':'textarea'},
@@ -1371,6 +1385,35 @@ function ciniki_writingfestivals_main() {
     this.registration.printComments = function() {
         M.api.openFile('ciniki.writingfestivals.registrationCommentsPDF', {'tnid':M.curTenantID, 'festival_id':this.festival_id, 'registration_id':this.registration_id});
     }
+    this.registration.uploadPDF = function() {
+        if( this.upload == null ) {
+            this.upload = M.aE('input', this.panelUID + '_pdf_filename_upload', 'image_uploader');
+            this.upload.setAttribute('name', 'pdf_filename');
+            this.upload.setAttribute('type', 'file');
+            this.upload.setAttribute('onchange', this.panelRef + '.uploadFile();');
+        }
+        this.upload.value = '';
+        this.upload.click();
+    }
+    this.registration.uploadFile = function() {
+        var f = this.upload;
+        M.api.postJSONFile('ciniki.writingfestivals.registrationPDFAdd', 
+            {'tnid':M.curTenantID, 'festival_id':this.festival_id, 'registration_id':this.registration_id}, 
+            f.files[0], 
+            function(rsp) {
+                if( rsp.stat != 'ok' ) {
+                    M.api.err(rsp);
+                    return false;
+                }
+                var p = M.ciniki_writingfestivals_main.registration;
+                p.data.pdf_filename = rsp.registration.pdf_filename;
+                p.refreshSection('pdf_buttons');
+                p.setFieldValue('pdf_filename', rsp.registration.pdf_filename);
+            });
+    }
+    this.registration.downloadPDF = function() {
+        M.api.openFile('ciniki.writingfestivals.registrationPDFDownload',{'tnid':M.curTenantID, 'registration_id':this.registration_id});
+    }
     this.registration.open = function(cb, rid, tid, cid, fid, list) {
         if( rid != null ) { this.registration_id = rid; }
         if( tid != null ) { this.teacher_customer_id = tid; }
@@ -1391,13 +1434,13 @@ function ciniki_writingfestivals_main() {
             p.sections._class.fields.class_id.options = rsp.classes;
             p.sections._class.fields.class_id.options.unshift({'id':0, 'name':''});
             p.teacher_customer_id = parseInt(rsp.registration.teacher_customer_id);
-            if( p.teacher_customer_id == 0 ) {
+/*            if( p.teacher_customer_id == 0 ) {
                 p.sections.teacher_details.addTxt = '';
                 p.sections.teacher_details.changeTxt = 'Add';
             } else {
                 p.sections.teacher_details.addTxt = 'Edit';
                 p.sections.teacher_details.changeTxt = 'Change';
-            }
+            } */
             for(var i = 1; i<= 5; i++) {
                 p['competitor' + i + '_id'] = parseInt(rsp.registration['competitor' + i + '_id']);
                 if( p['competitor' + i + '_id'] == 0 ) {

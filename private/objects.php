@@ -184,7 +184,23 @@ function ciniki_writingfestivals_objects($ciniki) {
             'word_count'=>array('name'=>'Word Count', 'default'=>''),
             'fee'=>array('name'=>'Fee', 'type'=>'currency', 'default'=>'0'),
             'payment_type'=>array('name'=>'Payment Type', 'default'=>'0'),
+            'pdf_filename'=>array('name'=>'PDF File', 'default'=>''),
             'notes'=>array('name'=>'Notes', 'default'=>''),
+            ),
+        'history_table'=>'ciniki_writingfestival_history',
+        );
+    $objects['comment'] = array(
+        'name'=>'Adjudication Comment',
+        'o_name'=>'comment',
+        'o_container'=>'comments',
+        'sync'=>'yes',
+        'table'=>'ciniki_writingfestival_comments',
+        'fields'=>array(
+            'registration_id'=>array('name'=>'Registration', 'ref'=>'ciniki.writingfestivals.registration'),
+            'adjudicator_id'=>array('name'=>'Adjudicator', 'ref'=>'ciniki.writingfestivals.adjudicator'),
+            'comments'=>array('name'=>'Comments', 'default'=>''),
+            'grade'=>array('name'=>'Grade', 'default'=>''),
+            'score'=>array('name'=>'Score', 'default'=>''),
             ),
         'history_table'=>'ciniki_writingfestival_history',
         );

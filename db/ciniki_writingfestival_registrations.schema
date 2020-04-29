@@ -65,6 +65,8 @@
 #                           120 - Other
 #                           121 - Paid Online
 #
+# pdf_filename:         The name of the file uploaded with their writting.
+#
 # notes:                Any notes for the registration.
 #
 # date_added:           The UTC date and time the record was added.
@@ -93,6 +95,7 @@ create table ciniki_writingfestival_registrations (
     word_count varchar(50) not null,
     fee decimal(19,4) not null, 
     payment_type tinyint unsigned not null,
+    pdf_filename varchar(250) not null,
     notes varchar(5000) not null,
     date_added datetime not null,
     last_updated datetime not null,
@@ -100,4 +103,4 @@ create table ciniki_writingfestival_registrations (
     unique index (uuid),
     index (festival_id, teacher_customer_id, billing_customer_id),
     index tenant_uuid (tnid, uuid, last_updated)
-) ENGINE='InnoDB', COMMENT='v1.01';
+) ENGINE='InnoDB', COMMENT='v1.02';

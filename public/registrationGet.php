@@ -77,6 +77,7 @@ function ciniki_writingfestivals_registrationGet($ciniki) {
             'word_count'=>'',
             'fee'=>'0',
             'payment_type'=>'0',
+            'pdf_filename'=>'',
             'notes'=>'',
         );
     }
@@ -103,6 +104,7 @@ function ciniki_writingfestivals_registrationGet($ciniki) {
             . "ciniki_writingfestival_registrations.word_count, "
             . "FORMAT(ciniki_writingfestival_registrations.fee, 2) AS fee, "
             . "ciniki_writingfestival_registrations.payment_type, "
+            . "ciniki_writingfestival_registrations.pdf_filename, "
             . "ciniki_writingfestival_registrations.notes "
             . "FROM ciniki_writingfestival_registrations "
             . "WHERE ciniki_writingfestival_registrations.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
@@ -113,7 +115,7 @@ function ciniki_writingfestivals_registrationGet($ciniki) {
             array('container'=>'registrations', 'fname'=>'id', 
                 'fields'=>array('festival_id', 'teacher_customer_id', 'billing_customer_id', 'rtype', 'status', 'invoice_id',
                     'display_name', 'competitor1_id', 'competitor2_id', 'competitor3_id', 'competitor4_id', 'competitor5_id', 
-                    'class_id', 'title', 'word_count', 'fee', 'payment_type', 'notes'),
+                    'class_id', 'title', 'word_count', 'fee', 'payment_type', 'pdf_filename', 'notes'),
                 ),
             ));
         if( $rc['stat'] != 'ok' ) {

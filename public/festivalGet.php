@@ -332,8 +332,8 @@ function ciniki_writingfestivals_festivalGet($ciniki) {
             $strsql = "SELECT registrations.id, "
                 . "registrations.festival_id, "
                 . "sections.id AS section_id, "
-                . "registrations.teacher_customer_id, "
-                . "teachers.display_name AS teacher_name, "
+//                . "registrations.teacher_customer_id, "
+//                . "teachers.display_name AS teacher_name, "
                 . "registrations.billing_customer_id, "
                 . "registrations.rtype, "
                 . "registrations.rtype AS rtype_text, "
@@ -346,12 +346,13 @@ function ciniki_writingfestivals_festivalGet($ciniki) {
                 . "registrations.title, "
                 . "registrations.word_count, "
                 . "FORMAT(registrations.fee, 2) AS fee, "
+                . "registrations.pdf_filename, "
                 . "registrations.payment_type "
                 . "FROM ciniki_writingfestival_registrations AS registrations "
-                . "LEFT JOIN ciniki_customers AS teachers ON ("
-                    . "registrations.teacher_customer_id = teachers.id "
-                    . "AND teachers.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
-                    . ") "
+//                . "LEFT JOIN ciniki_customers AS teachers ON ("
+//                    . "registrations.teacher_customer_id = teachers.id "
+//                    . "AND teachers.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+//                    . ") "
                 . "LEFT JOIN ciniki_writingfestival_classes AS classes ON ("
                     . "registrations.class_id = classes.id "
                     . "AND classes.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
@@ -375,8 +376,8 @@ function ciniki_writingfestivals_festivalGet($ciniki) {
             ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
             $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'ciniki.writingfestivals', array(
                 array('container'=>'registrations', 'fname'=>'id', 
-                    'fields'=>array('id', 'festival_id', 'teacher_customer_id', 'teacher_name', 'billing_customer_id', 'rtype', 'rtype_text', 'status', 'status_text', 'display_name', 
-                        'class_id', 'class_code', 'class_name', 'title', 'word_count', 'fee', 'payment_type'),
+                    'fields'=>array('id', 'festival_id', 'billing_customer_id', 'rtype', 'rtype_text', 'status', 'status_text', 'display_name', 
+                        'class_id', 'class_code', 'class_name', 'title', 'word_count', 'fee', 'pdf_filename', 'payment_type'),
                     'maps'=>array(
                         'rtype_text'=>$maps['registration']['rtype'],
                         'status_text'=>$maps['registration']['status'],

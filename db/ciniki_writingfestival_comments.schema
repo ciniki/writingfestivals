@@ -1,0 +1,38 @@
+#
+# Description
+# -----------
+# This table stores the adjudicator comments for each registration.
+#
+# Fields
+# ------
+# id:                   The ID assigned to the adjudicator.
+# uuid:                 The Universal Unique ID.
+# tnid:                 The tenant the adjudicator is attached to.
+#
+# registration_id:      The festival the adjudicator is attached to.
+#
+# adjudicator_id:       The ID of the customer who is the teacher for this registration or conductor of ensemble.
+#
+# comments:             The comments for the participant.
+# grade:                The grade assigned the registration. (A,B,C...)
+# score:                The score for the performance (0-100).
+#
+# date_added:           The UTC date and time the record was added.
+# last_updated:         The UTC date and time the record was last updated.
+#
+create table ciniki_writingfestival_comments (
+    id int not null auto_increment,
+    uuid char(36) not null,
+    tnid int not null,
+    registration_id int not null,
+    adjudicator_id int not null,
+    comments text not null,
+    grade varchar(50) not null,
+    score varchar(50) not null,
+    date_added datetime not null,
+    last_updated datetime not null,
+    primary key (id),
+    unique index (uuid),
+    index (registration_id, adjudicator_id),
+    index tenant_uuid (tnid, uuid, last_updated)
+) ENGINE='InnoDB', COMMENT='v1.01';

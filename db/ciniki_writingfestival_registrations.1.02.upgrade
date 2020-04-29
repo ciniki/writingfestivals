@@ -1,0 +1,5 @@
+#
+# Added invoice link
+#
+ALTER TABLE ciniki_writingfestival_registrations ADD COLUMN pdf_filename varchar(250) not null AFTER payment_type;
+ALTER TABLE ciniki_writingfestival_registrations COMMENT='v1.02';
