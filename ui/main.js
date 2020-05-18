@@ -627,7 +627,7 @@ function ciniki_writingfestivals_main() {
                 M.api.err(rsp);
                 return false;
             }
-            alert("Done");
+            M.alert("Done");
         });
     }
     this.edit.open = function(cb, fid, list) {
@@ -672,15 +672,15 @@ function ciniki_writingfestivals_main() {
         }
     }
     this.edit.remove = function() {
-        if( confirm('Are you sure you want to remove festival?') ) {
-            M.api.getJSONCb('ciniki.writingfestivals.festivalDelete', {'tnid':M.curTenantID, 'festival_id':this.festival_id}, function(rsp) {
+        M.confirm('Are you sure you want to remove festival?',null,function() {
+            M.api.getJSONCb('ciniki.writingfestivals.festivalDelete', {'tnid':M.curTenantID, 'festival_id':M.ciniki_writingfestivals_main.edit.festival_id}, function(rsp) {
                 if( rsp.stat != 'ok' ) {
                     M.api.err(rsp);
                     return false;
                 }
                 M.ciniki_writingfestivals_main.edit.close();
             });
-        }
+        });
     }
     this.edit.nextButtonFn = function() {
         if( this.nplist != null && this.nplist.indexOf('' + this.festival_id) < (this.nplist.length - 1) ) {
@@ -823,15 +823,15 @@ function ciniki_writingfestivals_main() {
         }
     }
     this.section.remove = function() {
-        if( confirm('Are you sure you want to remove section?') ) {
-            M.api.getJSONCb('ciniki.writingfestivals.sectionDelete', {'tnid':M.curTenantID, 'section_id':this.section_id}, function(rsp) {
+        M.confirm('Are you sure you want to remove section?',null,function() {
+            M.api.getJSONCb('ciniki.writingfestivals.sectionDelete', {'tnid':M.curTenantID, 'section_id':M.ciniki_writingfestivals_main.section.section_id}, function(rsp) {
                 if( rsp.stat != 'ok' ) {
                     M.api.err(rsp);
                     return false;
                 }
                 M.ciniki_writingfestivals_main.section.close();
             });
-        }
+        });
     }
     this.section.nextButtonFn = function() {
         if( this.nplist != null && this.nplist.indexOf('' + this.section_id) < (this.nplist.length - 1) ) {
@@ -974,15 +974,15 @@ function ciniki_writingfestivals_main() {
         }
     }
     this.category.remove = function() {
-        if( confirm('Are you sure you want to remove category?') ) {
-            M.api.getJSONCb('ciniki.writingfestivals.categoryDelete', {'tnid':M.curTenantID, 'category_id':this.category_id}, function(rsp) {
+        M.confirm('Are you sure you want to remove category?',null,function() {
+            M.api.getJSONCb('ciniki.writingfestivals.categoryDelete', {'tnid':M.curTenantID, 'category_id':M.ciniki_writingfestivals_main.category.category_id}, function(rsp) {
                 if( rsp.stat != 'ok' ) {
                     M.api.err(rsp);
                     return false;
                 }
                 M.ciniki_writingfestivals_main.category.close();
             });
-        }
+        });
     }
     this.category.nextButtonFn = function() {
         if( this.nplist != null && this.nplist.indexOf('' + this.category_id) < (this.nplist.length - 1) ) {
@@ -1102,15 +1102,15 @@ function ciniki_writingfestivals_main() {
         }
     }
     this.class.remove = function() {
-        if( confirm('Are you sure you want to remove class?') ) {
-            M.api.getJSONCb('ciniki.writingfestivals.classDelete', {'tnid':M.curTenantID, 'class_id':this.class_id}, function(rsp) {
+        M.confirm('Are you sure you want to remove class?',null,function() {
+            M.api.getJSONCb('ciniki.writingfestivals.classDelete', {'tnid':M.curTenantID, 'class_id':M.ciniki_writingfestivals_main.class.class_id}, function(rsp) {
                 if( rsp.stat != 'ok' ) {
                     M.api.err(rsp);
                     return false;
                 }
                 M.ciniki_writingfestivals_main.class.close();
             });
-        }
+        });
     }
     this.class.nextButtonFn = function() {
         if( this.nplist != null && this.nplist.indexOf('' + this.class_id) < (this.nplist.length - 1) ) {
@@ -1462,11 +1462,11 @@ function ciniki_writingfestivals_main() {
         if( cb == null ) { cb = 'M.ciniki_writingfestivals_main.registration.close();'; }
         if( !this.checkForm() ) { return false; }
         if( this.formValue('class_id') == 0 ) {
-            alert("You must select a class.");
+            M.alert("You must select a class.");
             return false;
         }
         if( this.competitor1_id == 0 ) {
-            alert("You must have a competitor.");
+            M.alert("You must have a competitor.");
             return false;
         }
         if( this.registration_id > 0 ) {
@@ -1507,15 +1507,15 @@ function ciniki_writingfestivals_main() {
         }
     }
     this.registration.remove = function() {
-        if( confirm('Are you sure you want to remove registration?') ) {
-            M.api.getJSONCb('ciniki.writingfestivals.registrationDelete', {'tnid':M.curTenantID, 'registration_id':this.registration_id}, function(rsp) {
+        M.confirm('Are you sure you want to remove registration?',null,function() {
+            M.api.getJSONCb('ciniki.writingfestivals.registrationDelete', {'tnid':M.curTenantID, 'registration_id':M.ciniki_writingfestivals_main.registration.registration_id}, function(rsp) {
                 if( rsp.stat != 'ok' ) {
                     M.api.err(rsp);
                     return false;
                 }
                 M.ciniki_writingfestivals_main.registration.close();
             });
-        }
+        });
     }
     this.registration.nextButtonFn = function() {
         if( this.nplist != null && this.nplist.indexOf('' + this.registration_id) < (this.nplist.length - 1) ) {
@@ -1635,15 +1635,15 @@ function ciniki_writingfestivals_main() {
         }
     }
     this.competitor.remove = function() {
-        if( confirm('Are you sure you want to remove competitor?') ) {
-            M.api.getJSONCb('ciniki.writingfestivals.competitorDelete', {'tnid':M.curTenantID, 'competitor_id':this.competitor_id}, function(rsp) {
+        M.confirm('Are you sure you want to remove competitor?',null,function() {
+            M.api.getJSONCb('ciniki.writingfestivals.competitorDelete', {'tnid':M.curTenantID, 'competitor_id':M.ciniki_writingfestivals_main.competitor.competitor_id}, function(rsp) {
                 if( rsp.stat != 'ok' ) {
                     M.api.err(rsp);
                     return false;
                 }
                 M.ciniki_writingfestivals_main.competitor.close();
             });
-        }
+        });
     }
     this.competitor.nextButtonFn = function() {
         if( this.nplist != null && this.nplist.indexOf('' + this.competitor_id) < (this.nplist.length - 1) ) {
@@ -1743,15 +1743,15 @@ function ciniki_writingfestivals_main() {
         }
     }
     this.schedulesection.remove = function() {
-        if( confirm('Are you sure you want to remove scheduleSection?') ) {
-            M.api.getJSONCb('ciniki.writingfestivals.scheduleSectionDelete', {'tnid':M.curTenantID, 'schedulesection_id':this.schedulesection_id}, function(rsp) {
+        M.confirm('Are you sure you want to remove scheduleSection?',null,function() {
+            M.api.getJSONCb('ciniki.writingfestivals.scheduleSectionDelete', {'tnid':M.curTenantID, 'schedulesection_id':M.ciniki_writingfestivals_main.schedulesection.schedulesection_id}, function(rsp) {
                 if( rsp.stat != 'ok' ) {
                     M.api.err(rsp);
                     return false;
                 }
                 M.ciniki_writingfestivals_main.schedulesection.close();
             });
-        }
+        });
     }
     this.schedulesection.nextButtonFn = function() {
         if( this.nplist != null && this.nplist.indexOf('' + this.schedulesection_id) < (this.nplist.length - 1) ) {
@@ -1845,15 +1845,15 @@ function ciniki_writingfestivals_main() {
         }
     }
     this.scheduledivision.remove = function() {
-        if( confirm('Are you sure you want to remove scheduleDivision?') ) {
-            M.api.getJSONCb('ciniki.writingfestivals.scheduleDivisionDelete', {'tnid':M.curTenantID, 'scheduledivision_id':this.scheduledivision_id}, function(rsp) {
+        M.confirm('Are you sure you want to remove scheduleDivision?',null,function() {
+            M.api.getJSONCb('ciniki.writingfestivals.scheduleDivisionDelete', {'tnid':M.curTenantID, 'scheduledivision_id':M.ciniki_writingfestivals_main.scheduledivision.scheduledivision_id}, function(rsp) {
                 if( rsp.stat != 'ok' ) {
                     M.api.err(rsp);
                     return false;
                 }
                 M.ciniki_writingfestivals_main.scheduledivision.close();
             });
-        }
+        });
     }
     this.scheduledivision.nextButtonFn = function() {
         if( this.nplist != null && this.nplist.indexOf('' + this.scheduledivision_id) < (this.nplist.length - 1) ) {
@@ -2009,15 +2009,15 @@ function ciniki_writingfestivals_main() {
         }
     }
     this.scheduletimeslot.remove = function() {
-        if( confirm('Are you sure you want to remove scheduleTimeslot?') ) {
-            M.api.getJSONCb('ciniki.writingfestivals.scheduleTimeslotDelete', {'tnid':M.curTenantID, 'scheduletimeslot_id':this.scheduletimeslot_id}, function(rsp) {
+        M.confirm('Are you sure you want to remove scheduleTimeslot?',null,function() {
+            M.api.getJSONCb('ciniki.writingfestivals.scheduleTimeslotDelete', {'tnid':M.curTenantID, 'scheduletimeslot_id':M.ciniki_writingfestivals_main.scheduletimeslot.scheduletimeslot_id}, function(rsp) {
                 if( rsp.stat != 'ok' ) {
                     M.api.err(rsp);
                     return false;
                 }
                 M.ciniki_writingfestivals_main.scheduletimeslot.close();
             });
-        }
+        });
     }
     this.scheduletimeslot.nextButtonFn = function() {
         if( this.nplist != null && this.nplist.indexOf('' + this.scheduletimeslot_id) < (this.nplist.length - 1) ) {
@@ -2160,15 +2160,15 @@ function ciniki_writingfestivals_main() {
         }
     }
     this.adjudicator.remove = function() {
-        if( confirm('Are you sure you want to remove adjudicator?') ) {
-            M.api.getJSONCb('ciniki.writingfestivals.adjudicatorDelete', {'tnid':M.curTenantID, 'adjudicator_id':this.adjudicator_id}, function(rsp) {
+        M.confirm('Are you sure you want to remove adjudicator?',null,function() {
+            M.api.getJSONCb('ciniki.writingfestivals.adjudicatorDelete', {'tnid':M.curTenantID, 'adjudicator_id':M.ciniki_writingfestivals_main.adjudicator.adjudicator_id}, function(rsp) {
                 if( rsp.stat != 'ok' ) {
                     M.api.err(rsp);
                     return false;
                 }
                 M.ciniki_writingfestivals_main.adjudicator.close();
             });
-        }
+        });
     }
     this.adjudicator.nextButtonFn = function() {
         if( this.nplist != null && this.nplist.indexOf('' + this.adjudicator_id) < (this.nplist.length - 1) ) {
@@ -2289,15 +2289,15 @@ function ciniki_writingfestivals_main() {
         }
     };
     this.editfile.remove = function() {
-        if( confirm('Are you sure you want to delete \'' + this.data.name + '\'?  All information about it will be removed and unrecoverable.') ) {
-            M.api.getJSONCb('ciniki.writingfestivals.fileDelete', {'tnid':M.curTenantID, 'file_id':this.file_id}, function(rsp) {
+        M.confirm('Are you sure you want to delete \'' + this.data.name + '\'?  All information about it will be removed and unrecoverable.',null,function() {
+            M.api.getJSONCb('ciniki.writingfestivals.fileDelete', {'tnid':M.curTenantID, 'file_id':M.ciniki_writingfestivals_main.editfile.file_id}, function(rsp) {
                 if( rsp.stat != 'ok' ) {
                     M.api.err(rsp);
                     return false;
                 } 
                 M.ciniki_writingfestivals_main.editfile.close();
             });
-        }
+        });
     };
     this.editfile.download = function(fid) {
         M.api.openFile('ciniki.writingfestivals.fileDownload', {'tnid':M.curTenantID, 'file_id':fid});
@@ -2373,7 +2373,7 @@ function ciniki_writingfestivals_main() {
         //
         var ac = M.createContainer(ap, 'ciniki_writingfestivals_main', 'yes');
         if( ac == null ) {
-            alert('App Error');
+            M.alert('App Error');
             return false;
         }
         
