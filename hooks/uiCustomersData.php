@@ -216,12 +216,18 @@ function ciniki_writingfestivals_hooks_uiCustomersData($ciniki, $tnid, $args) {
     //
     // Setup the tab
     //
-    $rsp['tabs'][] = array(
-        'id' => 'ciniki.writingfestivals.festivals',
-        'label' => 'Writing',
-        'sections' => $sections,
-        );
-    $sections = array();
+    if( count($sections['ciniki.writingfestivals.adjudicators']['data']) > 0 
+        || count($sections['ciniki.writingfestivals.competitors']['data']) > 0 
+        || count($sections['ciniki.writingfestivals.customers']['data']) > 0 
+        || count($sections['ciniki.writingfestivals.registrations']['data']) > 0 
+        ) {
+        $rsp['tabs'][] = array(
+            'id' => 'ciniki.writingfestivals.festivals',
+            'label' => 'Writing',
+            'sections' => $sections,
+            );
+        $sections = array();
+    }
 
     return $rsp;
 }
