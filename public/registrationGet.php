@@ -60,7 +60,7 @@ function ciniki_writingfestivals_registrationGet($ciniki) {
     //
     if( $args['registration_id'] == 0 ) {
         $registration = array('id'=>0,
-            'festival_id'=>'',
+            'festival_id'=>$args['festival_id'],
             'teacher_customer_id'=>'0',
             'billing_customer_id'=>'0',
             'rtype'=>30,
@@ -227,7 +227,7 @@ function ciniki_writingfestivals_registrationGet($ciniki) {
     //
     $strsql = "SELECT ciniki_writingfestival_classes.id, CONCAT_WS(' - ', ciniki_writingfestival_classes.code, ciniki_writingfestival_classes.name) AS name, FORMAT(fee, 2) AS fee "
         . "FROM ciniki_writingfestival_sections, ciniki_writingfestival_categories, ciniki_writingfestival_classes "
-        . "WHERE ciniki_writingfestival_sections.festival_id = '" . ciniki_core_dbQuote($ciniki, $args['festival_id']) . "' "
+        . "WHERE ciniki_writingfestival_sections.festival_id = '" . ciniki_core_dbQuote($ciniki, $registration['festival_id']) . "' "
         . "AND ciniki_writingfestival_sections.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
         . "AND ciniki_writingfestival_sections.id = ciniki_writingfestival_categories.section_id "
         . "AND ciniki_writingfestival_categories.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
@@ -244,6 +244,45 @@ function ciniki_writingfestivals_registrationGet($ciniki) {
     if( isset($rc['classes']) ) {
         $rsp['classes'] = $rc['classes'];
     }
+
+    //
+    // Get the festival details
+    //
+    $strsql = "SELECT ciniki_writingfestivals.id, "
+        . "ciniki_writingfestivals.name, "
+        . "ciniki_writingfestivals.permalink, "
+        . "ciniki_writingfestivals.start_date, "
+        . "ciniki_writingfestivals.end_date, "
+        . "ciniki_writingfestivals.status, "
+        . "ciniki_writingfestivals.flags, "
+        . "ciniki_writingfestivals.earlybird_date, "
+        . "ciniki_writingfestivals.primary_image_id, "
+        . "ciniki_writingfestivals.description, "
+        . "ciniki_writingfestivals.document_logo_id, "
+        . "ciniki_writingfestivals.document_header_msg, "
+        . "ciniki_writingfestivals.document_footer_msg "
+        . "FROM ciniki_writingfestivals "
+        . "WHERE ciniki_writingfestivals.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+        . "AND ciniki_writingfestivals.id = '" . ciniki_core_dbQuote($ciniki, $registration['festival_id']) . "' "
+        . "";
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
+    $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'ciniki.writingfestivals', array(
+        array('container'=>'festivals', 'fname'=>'id', 
+            'fields'=>array('name', 'permalink', 'start_date', 'end_date', 'status', 'flags', 'earlybird_date',
+                'primary_image_id', 'description', 
+                'document_logo_id', 'document_header_msg', 'document_footer_msg'),
+            'utctotz'=>array('start_date'=>array('timezone'=>'UTC', 'format'=>$date_format),
+                'end_date'=>array('timezone'=>'UTC', 'format'=>$date_format),
+                'earlybird_date'=>array('timezone'=>'UTC', 'format'=>$date_format)),
+            ),
+        ));
+    if( $rc['stat'] != 'ok' ) {
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.174', 'msg'=>'Festival not found', 'err'=>$rc['err']));
+    }
+    if( !isset($rc['festivals'][0]) ) {
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.175', 'msg'=>'Unable to find Festival'));
+    }
+    $rsp['registration']['festival'] = $rc['festivals'][0];
 
     return $rsp;
 }

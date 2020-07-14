@@ -1245,11 +1245,11 @@ function ciniki_writingfestivals_main() {
 //            'earlybird_fee':{'label':'Earlybird Fee', 'type':'text', 'size':'small'},
             'fee':{'label':'Fee', 'type':'text', 'size':'small'},
             'pdf_filename':{'label':'PDF', 'type':'text', 'editable':'no',
-                'visible':function() { return (M.ciniki_writingfestivals_main.festival.data.flags&0x02) == 0x02 ? 'yes' : 'no'},
+                'visible':function() { return (M.ciniki_writingfestivals_main.registration.data.festival.flags&0x02) == 0x02 ? 'yes' : 'no'},
                 },
             }},
         'pdf_buttons':{'label':'', 
-            'visible':function() { return (M.ciniki_writingfestivals_main.festival.data.flags&0x02) == 0x02 ? 'yes' : 'no'},
+            'visible':function() { return (M.ciniki_writingfestivals_main.registration.data.festival.flags&0x02) == 0x02 ? 'yes' : 'no'},
             'buttons':{
                 'add':{'label':'Upload Writing PDF', 'fn':'M.ciniki_writingfestivals_main.registration.uploadPDF();',
                     'visible':function() { return M.ciniki_writingfestivals_main.registration.data.pdf_filename == '' ? 'yes' : 'no'},
@@ -1478,7 +1478,7 @@ function ciniki_writingfestivals_main() {
             if( this.competitor4_id != this.data.competitor4_id ) { c += '&competitor4_id=' + this.competitor4_id; }
             if( this.competitor5_id != this.data.competitor5_id ) { c += '&competitor5_id=' + this.competitor5_id; }
             if( c != '' ) {
-                M.api.postJSONCb('ciniki.writingfestivals.registrationUpdate', {'tnid':M.curTenantID, 'registration_id':this.registration_id, 'festival_id':this.festival_id}, c, function(rsp) {
+                M.api.postJSONCb('ciniki.writingfestivals.registrationUpdate', {'tnid':M.curTenantID, 'registration_id':this.registration_id}, c, function(rsp) {
                     if( rsp.stat != 'ok' ) {
                         M.api.err(rsp);
                         return false;
@@ -2376,8 +2376,12 @@ function ciniki_writingfestivals_main() {
             M.alert('App Error');
             return false;
         }
-        
-        this.menu.open(cb);
+
+        if( args.registration_id != null && args.registration_id != '' ) {
+            this.registration.open(cb, args.registration_id, 0, 0);
+        } else {
+            this.menu.open(cb);
+        }
     }
 }
 
