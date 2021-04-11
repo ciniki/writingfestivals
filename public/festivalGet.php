@@ -442,17 +442,20 @@ function ciniki_writingfestivals_festivalGet($ciniki) {
             //
             // Get the list of schedule sections
             //
-            $strsql = "SELECT ciniki_writingfestival_schedule_sections.id, "
-                . "ciniki_writingfestival_schedule_sections.festival_id, "
-                . "ciniki_writingfestival_schedule_sections.name "
-                . "FROM ciniki_writingfestival_schedule_sections "
-                . "WHERE ciniki_writingfestival_schedule_sections.festival_id = '" . ciniki_core_dbQuote($ciniki, $args['festival_id']) . "' "
-                . "AND ciniki_writingfestival_schedule_sections.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+            $strsql = "SELECT sections.id, "
+                . "sections.festival_id, "
+                . "sections.name, "
+                . "sections.adjudicator1_id, "
+                . "sections.adjudicator2_id, "
+                . "sections.adjudicator3_id "
+                . "FROM ciniki_writingfestival_schedule_sections AS sections "
+                . "WHERE sections.festival_id = '" . ciniki_core_dbQuote($ciniki, $args['festival_id']) . "' "
+                . "AND sections.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
                 . "";
             ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
             $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'ciniki.writingfestivals', array(
                 array('container'=>'schedulesections', 'fname'=>'id', 
-                    'fields'=>array('id', 'festival_id', 'name')),
+                    'fields'=>array('id', 'festival_id', 'name', 'adjudicator1_id', 'adjudicator2_id', 'adjudicator3_id')),
                 ));
             if( $rc['stat'] != 'ok' ) {
                 return $rc;
@@ -583,7 +586,7 @@ function ciniki_writingfestivals_festivalGet($ciniki) {
                             )),
                     array('container'=>'registrations', 'fname'=>'reg_id', 
                         'fields'=>array('id'=>'reg_id', 'uuid'=>'reg_uuid', 'name'=>'display_name', 'public_name', 'title', 
-                            'virtual', 'pdf_filename',
+                            'pdf_filename',
                             )),
                     array('container'=>'comments', 'fname'=>'comment_id', 
                         'fields'=>array('id'=>'comment_id', 'adjudicator_id', 'comments', 'grade', 'score')),
