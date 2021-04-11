@@ -24,7 +24,7 @@
 # flags:                The options for the festival.
 #
 #                           0x01 - Online Registrations Open
-#                           0x02 - 
+#                           0x02 - Online comments
 #                           0x04 - 
 #                           0x08 - 
 #

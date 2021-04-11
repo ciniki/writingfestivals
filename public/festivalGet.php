@@ -34,6 +34,7 @@ function ciniki_writingfestivals_festivalGet($ciniki) {
         'teacher_customer_id'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Teacher'),
         'competitors'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Competitors'),
         'adjudicators'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Adjudicators'),
+        'comments'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Comments'),
         'files'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Files'),
         'sponsors'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Sponsors'),
         ));
@@ -461,6 +462,9 @@ function ciniki_writingfestivals_festivalGet($ciniki) {
                 $nplists['schedule_sections'] = array();
                 foreach($festival['schedule_sections'] as $iid => $schedulesection) {
                     $nplists['schedule_sections'][] = $schedulesection['id'];
+                    if( isset($args['ssection_id']) && $args['ssection_id'] == $schedulesection['id'] ) {
+                        $requested_section = $schedulesection;
+                    }
                 }
             } else {
                 $festival['schedule_sections'] = array();
@@ -512,7 +516,115 @@ function ciniki_writingfestivals_festivalGet($ciniki) {
             //
             // Get the list of schedule section divisions timeslots
             //
-            if( isset($args['sdivision_id']) && $args['sdivision_id'] > 0 ) {
+            if( isset($args['sdivision_id']) && $args['sdivision_id'] > 0 
+                && isset($args['comments']) && $args['comments'] == 'yes'
+                && isset($requested_section)
+                ) {
+                $strsql = "SELECT "
+                    . "timeslots.id AS timeslot_id, "
+                    . "timeslots.uuid AS timeslot_uuid, "
+                    . "IF(timeslots.name='', IFNULL(class1.name, ''), timeslots.name) AS timeslot_name, "
+                    . "TIME_FORMAT(timeslots.slot_time, '%l:%i %p') AS slot_time_text, "
+                    . "timeslots.class1_id, "
+                    . "timeslots.class2_id, "
+                    . "timeslots.class3_id, "
+                    . "IFNULL(class1.name, '') AS class1_name, "
+                    . "IFNULL(class2.name, '') AS class2_name, "
+                    . "IFNULL(class3.name, '') AS class3_name, "
+            //        . "timeslots.name AS timeslot_name, "
+                    . "timeslots.description, "
+                    . "registrations.id AS reg_id, "
+                    . "registrations.uuid AS reg_uuid, "
+                    . "registrations.display_name, "
+                    . "registrations.public_name, "
+                    . "registrations.title, "
+//                    . "registrations.virtual, "
+                    . "registrations.pdf_filename, "
+                    . "IFNULL(comments.adjudicator_id, 0) AS adjudicator_id, "
+                    . "IFNULL(comments.id, 0) AS comment_id, "
+                    . "IFNULL(comments.comments, '') AS comments, "
+                    . "IFNULL(comments.grade, '') AS grade, "
+                    . "IFNULL(comments.score, '') AS score "
+                    . "FROM ciniki_writingfestival_schedule_timeslots AS timeslots "
+                    . "LEFT JOIN ciniki_writingfestival_classes AS class1 ON ("
+                        . "timeslots.class1_id = class1.id " 
+                        . "AND class1.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+                        . ") "
+                    . "LEFT JOIN ciniki_writingfestival_classes AS class2 ON ("
+                        . "timeslots.class3_id = class2.id " 
+                        . "AND class2.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+                        . ") "
+                    . "LEFT JOIN ciniki_writingfestival_classes AS class3 ON ("
+                        . "timeslots.class3_id = class3.id " 
+                        . "AND class3.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+                        . ") "
+                    . "LEFT JOIN ciniki_writingfestival_registrations AS registrations ON ("
+                        . "(timeslots.class1_id = registrations.class_id "  
+                            . "OR timeslots.class2_id = registrations.class_id "
+                            . "OR timeslots.class3_id = registrations.class_id "
+                            . ") "
+                        . "AND ((timeslots.flags&0x01) = 0 OR timeslots.id = registrations.timeslot_id) "
+                        . "AND registrations.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+                        . ") "
+                    . "LEFT JOIN ciniki_writingfestival_comments AS comments ON ("
+                        . "registrations.id = comments.registration_id "
+                        . "AND comments.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+                        . ") "
+                    . "WHERE timeslots.sdivision_id = '" . ciniki_core_dbQuote($ciniki, $args['sdivision_id']) . "' "
+                        . "AND timeslots.class1_id > 0 "
+                        . "AND timeslots.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+                    . "ORDER BY slot_time, registrations.display_name, comments.adjudicator_id "
+                    . "";
+                ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
+                $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'ciniki.writingfestivals', array(
+                    array('container'=>'timeslots', 'fname'=>'timeslot_id', 
+                        'fields'=>array('id'=>'timeslot_id', 'permalink'=>'timeslot_uuid', 'name'=>'timeslot_name', 'time'=>'slot_time_text', 
+                            'class1_id', 'class2_id', 'class3_id', 'description', 'class1_name', 'class2_name', 'class3_name',
+                            )),
+                    array('container'=>'registrations', 'fname'=>'reg_id', 
+                        'fields'=>array('id'=>'reg_id', 'uuid'=>'reg_uuid', 'name'=>'display_name', 'public_name', 'title', 
+                            'virtual', 'pdf_filename',
+                            )),
+                    array('container'=>'comments', 'fname'=>'comment_id', 
+                        'fields'=>array('id'=>'comment_id', 'adjudicator_id', 'comments', 'grade', 'score')),
+                    ));
+                if( $rc['stat'] != 'ok' ) {
+                    return $rc;
+                }
+                $festival['timeslot_comments'] = isset($rc['timeslots']) ? $rc['timeslots'] : array();
+                foreach($festival['timeslot_comments'] as $tid => $timeslot) {
+                    $num_completed = array();
+                    $num_registrations = 0;
+                    if( isset($timeslot['registrations']) ) {
+                        foreach($timeslot['registrations'] as $rid => $registration) {
+                            $num_registrations++;
+                            if( isset($registration['comments']) ) {
+                                foreach($registration['comments'] as $comment) {
+                                    if( $comment['comments'] != '' && $comment['grade'] != '' && $comment['score'] != '' ) {
+                                        if( !isset($num_completed[$comment['adjudicator_id']]) ) {
+                                            $num_completed[$comment['adjudicator_id']] = 1;
+                                        } else {
+                                            $num_completed[$comment['adjudicator_id']]++;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    //
+                    // For each adjudicator, add the
+                    //
+                    for($i = 1;$i < 4;$i++) {
+                        if( $requested_section["adjudicator{$i}_id"] > 0 ) {
+                            $adjudicator_completed = isset($num_completed[$requested_section["adjudicator{$i}_id"]]) ? $num_completed[$requested_section["adjudicator{$i}_id"]] : 0;
+                            $festival['timeslot_comments'][$tid]['status' . $i] = $adjudicator_completed . ' of ' . $num_registrations;
+                        } else {
+                            $festival['timeslot_comments'][$tid]['status' . $i] = '';
+                        }
+                    }
+                }
+            }
+            elseif( isset($args['sdivision_id']) && $args['sdivision_id'] > 0 ) {
                 $strsql = "SELECT timeslots.id, "
                     . "timeslots.festival_id, "
                     . "timeslots.sdivision_id, "
@@ -638,11 +750,19 @@ function ciniki_writingfestivals_festivalGet($ciniki) {
                 . "WHERE ciniki_writingfestival_adjudicators.festival_id = '" . ciniki_core_dbQuote($ciniki, $args['festival_id']) . "' "
                 . "AND ciniki_writingfestival_adjudicators.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
                 . "";
-            ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
-            $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'ciniki.writingfestivals', array(
-                array('container'=>'adjudicators', 'fname'=>'id', 
-                    'fields'=>array('id', 'festival_id', 'customer_id', 'name'=>'display_name')),
-                ));
+            if( isset($args['comments']) && $args['comments'] == 'yes' ) {
+                ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryIDTree');
+                $rc = ciniki_core_dbHashQueryIDTree($ciniki, $strsql, 'ciniki.writingfestivals', array(
+                    array('container'=>'adjudicators', 'fname'=>'id', 
+                        'fields'=>array('id', 'festival_id', 'customer_id', 'name'=>'display_name')),
+                    ));
+            } else {
+                ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
+                $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'ciniki.writingfestivals', array(
+                    array('container'=>'adjudicators', 'fname'=>'id', 
+                        'fields'=>array('id', 'festival_id', 'customer_id', 'name'=>'display_name')),
+                    ));
+            }
             if( $rc['stat'] != 'ok' ) {
                 return $rc;
             }
