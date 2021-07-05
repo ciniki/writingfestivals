@@ -98,7 +98,7 @@ function ciniki_writingfestivals_templates_teacherRegistrationsPDF(&$ciniki, $tn
                 ),
             ));
         if( $rc['stat'] != 'ok' ) {
-            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.126', 'msg'=>'Unable to load registrations', 'err'=>$rc['err']));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.184', 'msg'=>'Unable to load registrations', 'err'=>$rc['err']));
         }
         $registrations = isset($rc['registrations']) ? $rc['registrations'] : array();
     } else {

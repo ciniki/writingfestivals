@@ -22,7 +22,7 @@ function ciniki_writingfestivals_web_teacherCreate(&$ciniki, $settings, $tnid, $
     // Check to make sure the module is enabled
     //
     if( !isset($ciniki['tenant']['modules']['ciniki.writingfestivals']) ) {
-        return array('stat'=>'404', 'err'=>array('code'=>'ciniki.writingfestivals.11', 'msg'=>"I'm sorry, the page you requested does not exist."));
+        return array('stat'=>'404', 'err'=>array('code'=>'ciniki.writingfestivals.154', 'msg'=>"I'm sorry, the page you requested does not exist."));
     }
 
     if( !isset($_POST['teacher_name']) 
@@ -44,7 +44,7 @@ function ciniki_writingfestivals_web_teacherCreate(&$ciniki, $settings, $tnid, $
             . "";
         $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.writingfestivals', 'item');
         if( $rc['stat'] != 'ok' ) {
-            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.146', 'msg'=>'Unable to load item', 'err'=>$rc['err']));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.189', 'msg'=>'Unable to load item', 'err'=>$rc['err']));
         }
         if( isset($rc['item']) ) {
             return array('stat'=>'ok', 'teacher_customer_id'=>$rc['item']['id']);
@@ -67,7 +67,7 @@ function ciniki_writingfestivals_web_teacherCreate(&$ciniki, $settings, $tnid, $
             . "";
         $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.writingfestivals', 'item');
         if( $rc['stat'] != 'ok' ) {
-            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.146', 'msg'=>'Unable to load item', 'err'=>$rc['err']));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.190', 'msg'=>'Unable to load item', 'err'=>$rc['err']));
         }
         if( isset($rc['item']) ) {
             return array('stat'=>'ok', 'teacher_customer_id'=>$rc['item']['customer_id']);
@@ -78,7 +78,7 @@ function ciniki_writingfestivals_web_teacherCreate(&$ciniki, $settings, $tnid, $
     // Check that both name and email were specified
     //
     if( $_POST['teacher_name'] == '' && isset($_POST['teacher_email']) && $_POST['teacher_email'] != '' ) {
-        return array('stat'=>'error', 'err'=>array('code'=>'ciniki.writingfestivals.146', 'msg'=>"You must specifiy the Teacher's Name"));
+        return array('stat'=>'error', 'err'=>array('code'=>'ciniki.writingfestivals.191', 'msg'=>"You must specifiy the Teacher's Name"));
     }
 
     //

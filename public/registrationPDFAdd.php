@@ -90,7 +90,7 @@ function ciniki_writingfestivals_registrationPDFAdd(&$ciniki) {
     // Check the extension is a PDF, currently only accept PDF files
     //
     if( $args['extension'] != 'pdf' ) {
-        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.54', 'msg'=>'The file must be a PDF file.'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.172', 'msg'=>'The file must be a PDF file.'));
     }
    
     //
@@ -100,12 +100,12 @@ function ciniki_writingfestivals_registrationPDFAdd(&$ciniki) {
         . $registration['uuid'][0] . '/' . $registration['uuid'] . '_writing';
     if( !is_dir(dirname($storage_filename)) ) {
         if( !mkdir(dirname($storage_filename), 0700, true) ) {
-            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.55', 'msg'=>'Unable to add file'));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.177', 'msg'=>'Unable to add file'));
         }
     }
 
     if( !rename($_FILES['uploadfile']['tmp_name'], $storage_filename) ) {
-        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.56', 'msg'=>'Unable to add file'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.178', 'msg'=>'Unable to add file'));
     }
 
     //

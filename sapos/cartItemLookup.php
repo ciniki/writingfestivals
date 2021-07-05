@@ -15,7 +15,7 @@ function ciniki_writingfestivals_sapos_cartItemLookup($ciniki, $tnid, $customer,
 
     if( !isset($args['object']) || $args['object'] == '' 
         || !isset($args['object_id']) || $args['object_id'] == '' ) {
-        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.131', 'msg'=>'No registration specified', 'err'=>$rc['err']));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.186', 'msg'=>'No registration specified', 'err'=>$rc['err']));
     }
 
     //

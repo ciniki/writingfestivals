@@ -22,7 +22,7 @@ function ciniki_writingfestivals_web_processRequestRegistrations(&$ciniki, $sett
     // Check to make sure the module is enabled
     //
     if( !isset($ciniki['tenant']['modules']['ciniki.writingfestivals']) ) {
-        return array('stat'=>'404', 'err'=>array('code'=>'ciniki.writingfestivals.121', 'msg'=>"I'm sorry, the page you requested does not exist."));
+        return array('stat'=>'404', 'err'=>array('code'=>'ciniki.writingfestivals.181', 'msg'=>"I'm sorry, the page you requested does not exist."));
     }
 
     //
@@ -81,7 +81,7 @@ function ciniki_writingfestivals_web_processRequestRegistrations(&$ciniki, $sett
         'emails' => 'yes',
         ));
     if( $rc['stat'] != 'ok' ) {
-        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.128', 'msg'=>'Internal Error', 'err'=>$rc['err']));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.185', 'msg'=>'Internal Error', 'err'=>$rc['err']));
     }
     $customer = $rc['customer'];
 
@@ -243,7 +243,7 @@ function ciniki_writingfestivals_web_processRequestRegistrations(&$ciniki, $sett
             ),
         ));
     if( $rc['stat'] != 'ok' ) {
-        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.125', 'msg'=>'Unable to load competitors', 'err'=>$rc['err']));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.183', 'msg'=>'Unable to load competitors', 'err'=>$rc['err']));
     }
     $competitors = isset($rc['competitors']) ? $rc['competitors'] : array();
 
@@ -545,7 +545,7 @@ function ciniki_writingfestivals_web_processRequestRegistrations(&$ciniki, $sett
                             if( $rc['stat'] == 'error' ) {
                                 $err_msg = $rc['err']['msg'];
                             } elseif( $rc['stat'] != 'ok' ) {
-                                return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.145', 'msg'=>'Unable to update registration', 'err'=>$rc['err']));
+                                return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.188', 'msg'=>'Unable to update registration', 'err'=>$rc['err']));
                             }
                             if( $err_msg != '' ) {
                                 $update_args['teacher_customer_id'] = $rc['teacher_customer_id'];

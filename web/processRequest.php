@@ -125,7 +125,7 @@ function ciniki_writingfestivals_web_processRequest(&$ciniki, $settings, $tnid, 
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbQueryList2');
     $rc = ciniki_core_dbQueryList2($ciniki, $strsql, 'ciniki.writingfestivals', 'settings');
     if( $rc['stat'] != 'ok' ) {
-        return array('stat'=>'404', 'err'=>array('code'=>'ciniki.writingfestivals.143', 'msg'=>'We could not find the requested Writing Festival. Please try again or contact us for more information.'));
+        return array('stat'=>'404', 'err'=>array('code'=>'ciniki.writingfestivals.187', 'msg'=>'We could not find the requested Writing Festival. Please try again or contact us for more information.'));
     }
     foreach($rc['settings'] as $k => $v) {
         $festival['settings'][$k] = $v;

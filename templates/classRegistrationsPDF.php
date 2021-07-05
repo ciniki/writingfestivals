@@ -63,10 +63,10 @@ function ciniki_writingfestivals_templates_classRegistrationsPDF(&$ciniki, $tnid
                 'document_logo_id', 'document_header_msg', 'document_footer_msg')),
         ));
     if( $rc['stat'] != 'ok' ) {
-        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.107', 'msg'=>'Festival not found', 'err'=>$rc['err']));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.179', 'msg'=>'Festival not found', 'err'=>$rc['err']));
     }
     if( !isset($rc['festivals'][0]) ) {
-        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.108', 'msg'=>'Unable to find Festival'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.180', 'msg'=>'Unable to find Festival'));
     }
     $festival = $rc['festivals'][0];
 

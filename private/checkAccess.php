@@ -50,7 +50,7 @@ function ciniki_writingfestivals_checkAccess(&$ciniki, $tnid, $method) {
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQuery');
     $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.tenants', 'user');
     if( $rc['stat'] != 'ok' ) {
-        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.2', 'msg'=>'Access denied.'));
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.83', 'msg'=>'Access denied.'));
     }
     //
     // If the user has permission, return ok

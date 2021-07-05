@@ -29,7 +29,7 @@ function ciniki_writingfestivals_web_processRequestAdjudications(&$ciniki, $sett
     // Check there is a festival setup
     //
     if( !isset($args['festival_id']) || $args['festival_id'] <= 0 ) {
-        return array('stat'=>'404', 'err'=>array('code'=>'ciniki.writingfestivals.122', 'msg'=>"I'm sorry, the page you requested does not exist."));
+        return array('stat'=>'404', 'err'=>array('code'=>'ciniki.writingfestivals.182', 'msg'=>"I'm sorry, the page you requested does not exist."));
     }
 
     //
@@ -213,7 +213,7 @@ function ciniki_writingfestivals_web_processRequestAdjudications(&$ciniki, $sett
             $storage_filename = $rc['storage_dir'] . '/ciniki.writingfestivals/files/' 
                 . $registration['uuid'][0] . '/' . $registration['uuid'] . '_writing';
             if( !file_exists($storage_filename) ) {
-                return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.55', 'msg'=>'File does not exist'));
+                return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.173', 'msg'=>'File does not exist'));
             }
 
             header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); 
