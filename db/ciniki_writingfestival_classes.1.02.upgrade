@@ -1,0 +1,5 @@
+#
+# Add the fields for virtual fees
+#
+ALTER TABLE ciniki_writingfestival_classes ADD COLUMN virtual_fee decimal(19,6) not null AFTER fee;
+ALTER TABLE ciniki_writingfestival_classes COMMENT='v1.02';

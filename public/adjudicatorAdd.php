@@ -23,6 +23,8 @@ function ciniki_writingfestivals_adjudicatorAdd(&$ciniki) {
         'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'),
         'festival_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Festival'),
         'customer_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Customer'),
+        'image_id'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Image'),
+        'description'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Bio'),
         ));
     if( $rc['stat'] != 'ok' ) {
         return $rc;

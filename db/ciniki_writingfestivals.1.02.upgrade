@@ -1,0 +1,7 @@
+#
+# Add the end dates for live and virtual
+#
+ALTER TABLE ciniki_writingfestivals MODIFY COLUMN earlybird_date datetime not null;
+ALTER TABLE ciniki_writingfestivals ADD COLUMN live_date datetime not null AFTER earlybird_date;
+ALTER TABLE ciniki_writingfestivals ADD COLUMN virtual_date datetime not null AFTER live_date;
+ALTER TABLE ciniki_writingfestivals COMMENT='v1.02';

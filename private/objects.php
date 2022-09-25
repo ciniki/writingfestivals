@@ -26,6 +26,8 @@ function ciniki_writingfestivals_objects($ciniki) {
             'status'=>array('name'=>'Status', 'default'=>'10'),
             'flags'=>array('name'=>'Flags', 'default'=>'0'),
             'earlybird_date'=>array('name'=>'Earlybird End Date', 'default'=>''),
+            'live_date'=>array('name'=>'Live End Date', 'default'=>''),
+            'virtual_date'=>array('name'=>'Virtual End Date', 'default'=>''),
             'primary_image_id'=>array('name'=>'Primary Image', 'ref'=>'ciniki.images.image', 'default'=>'0'),
             'description'=>array('name'=>'Description', 'default'=>''),
             'document_logo_id'=>array('name'=>'Document Header Logo', 'ref'=>'ciniki.images.image', 'default'=>'0'),
@@ -56,6 +58,8 @@ function ciniki_writingfestivals_objects($ciniki) {
         'fields'=>array(
             'festival_id'=>array('name'=>'Festival', 'ref'=>'ciniki.writingfestivals.festival'),
             'customer_id'=>array('name'=>'Customer', 'ref'=>'ciniki.customers.customer'),
+            'image_id'=>array('name'=>'Image', 'ref'=>'ciniki.images.image', 'default'=>'0'),
+            'description'=>array('name'=>'Bio', 'default'=>''),
             ),
         'history_table'=>'ciniki_writingfestival_history',
         );
@@ -70,6 +74,7 @@ function ciniki_writingfestivals_objects($ciniki) {
             'name'=>array('name'=>'Name'),
             'permalink'=>array('name'=>'Permalink', 'default'=>''),
             'sequence'=>array('name'=>'Order', 'default'=>'1'),
+            'flags'=>array('name'=>'Options', 'default'=>'0'),
             'primary_image_id'=>array('name'=>'Image', 'ref'=>'ciniki.images.image', 'default'=>'0'),
             'synopsis'=>array('name'=>'Synopsis', 'default'=>''),
             'description'=>array('name'=>'Description', 'default'=>''),
@@ -110,6 +115,7 @@ function ciniki_writingfestivals_objects($ciniki) {
             'flags'=>array('name'=>'Options', 'default'=>'0'),
             'earlybird_fee'=>array('name'=>'Earlybird Fee', 'type'=>'currency', 'default'=>'0'),
             'fee'=>array('name'=>'Fee', 'type'=>'currency', 'default'=>'0'),
+            'virtual_fee'=>array('name'=>'Virtual Fee', 'type'=>'currency', 'default'=>'0'),
             ),
         'history_table'=>'ciniki_writingfestival_history',
         );
@@ -252,6 +258,43 @@ function ciniki_writingfestivals_objects($ciniki) {
             'flags'=>array('name'=>'Options', 'default'=>'0'),
             ),
         'history_table'=>'ciniki_writingfestival_history',
+        );
+    $objects['winner'] = array(
+        'name' => 'Winner',
+        'sync' => 'yes',
+        'o_name' => 'winner',
+        'o_container' => 'winners',
+        'table' => 'ciniki_writingfestival_winners',
+        'fields' => array(
+            'festival_id' => array('name'=>'Festival', 'ref'=>'ciniki.writingfestivals.festival'),
+            'category' => array('name'=>'Category'),
+            'award' => array('name'=>'Award'),
+            'sequence' => array('name'=>'Order', 'default'=>'1'),
+            'title' => array('name'=>'Title', 'default'=>''),
+            'author' => array('name'=>'Author', 'default'=>''),
+            'permalink' => array('name'=>'Permalink'),
+            'image_id' => array('name'=>'Image', 'ref'=>'ciniki.images.image', 'default'=>'0'),
+            'synopsis' => array('name'=>'Synopsis', 'default'=>''),
+            'intro' => array('name'=>'Introduction', 'default'=>''),
+            'content' => array('name'=>'Content', 'default'=>''),
+            ),
+        'history_table' => 'ciniki_writingfestival_history',
+        );
+    $objects['sponsor'] = array(
+        'name' => 'Sponsor',
+        'sync' => 'yes',
+        'o_name' => 'sponsor',
+        'o_container' => 'sponsors',
+        'table' => 'ciniki_writingfestival_sponsors',
+        'fields' => array(
+            'festival_id' => array('name'=>'Festival', 'ref'=>'ciniki.writingfestivals.festival'),
+            'name' => array('name'=>'Name'),
+            'url' => array('name'=>'Website', 'default'=>''),
+            'sequence' => array('name'=>'Order', 'default'=>1),
+            'flags' => array('name'=>'Options', 'default'=>'0'),
+            'image_id' => array('name'=>'Logo', 'ref'=>'ciniki.images.image', 'default'=>0),
+            ),
+        'history_table' => 'ciniki_writingfestival_history',
         );
     $objects['setting'] = array(
         'name' => 'Setting',

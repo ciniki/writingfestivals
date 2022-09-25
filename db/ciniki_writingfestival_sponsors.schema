@@ -1,0 +1,49 @@
+#
+# Description
+# -----------
+# The sponsors for each writing festival
+#
+# Fields
+# ------
+# id:                   The ID assigned to the sponsor.
+# uuid:                 The Universal Unique ID.
+# tnid:                 The tenant the sponsor is attached to.
+#
+# festival_id:          The ID of the festival the sponsor is attached to.
+#
+# name:                 The name for the sponsor.
+# url:                  The URL for the sponsor.
+#
+# sequence:             The order to display the section in.
+#
+# flags:                The options for the section.
+#
+#                           0x01 - Level 1 sponsor
+#                           0x02 - Level 2 sponsor
+#                           0x04 - Level 3 sponsor
+#                           0x08 - 
+#
+# image_id:             The ID of the image for the sponsor.
+#
+# date_added:           The UTC date and time the record was added.
+# last_updated:         The UTC date and time the record was last updated.
+#
+create table ciniki_writingfestival_sponsors (
+    id int not null auto_increment,
+    uuid char(36) not null,
+    tnid int not null,
+
+    festival_id int not null,
+    name varchar(150) not null,
+    url varchar(250) not null,
+    sequence tinyint unsigned not null,
+    flags tinyint unsigned not null,
+    image_id int not null,
+
+    date_added datetime not null,
+    last_updated datetime not null,
+    primary key (id),
+    unique index (uuid),
+    unique index (festival_id, name),
+    index tenant_uuid (tnid, uuid, last_updated)
+) ENGINE='InnoDB', COMMENT='v1.01';

@@ -42,6 +42,6 @@ function ciniki_writingfestivals_scheduleSectionHistory($ciniki) {
     }
 
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbGetModuleHistory');
-    return ciniki_core_dbGetModuleHistory($ciniki, 'ciniki.writingfestivals', 'ciniki_writingfestivals_history', $args['tnid'], 'ciniki_writingfestival_schedule_sections', $args['schedulesection_id'], $args['field']);
+    return ciniki_core_dbGetModuleHistory($ciniki, 'ciniki.writingfestivals', 'ciniki_writingfestival_history', $args['tnid'], 'ciniki_writingfestival_schedule_sections', $args['schedulesection_id'], $args['field']);
 }
 ?>

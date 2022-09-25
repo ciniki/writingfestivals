@@ -50,12 +50,12 @@ function ciniki_writingfestivals_fileHistory($ciniki) {
     if( $args['field'] == 'publish_date' ) {
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbGetModuleHistoryReformat');
         return ciniki_core_dbGetModuleHistoryReformat($ciniki, 'ciniki.writingfestivals', 
-            'ciniki_writingfestivals_history', $args['tnid'], 
+            'ciniki_writingfestival_history', $args['tnid'], 
             'ciniki_writingfestival_files', $args['file_id'], $args['field'], 'date');
     }
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbGetModuleHistory');
     return ciniki_core_dbGetModuleHistory($ciniki, 'ciniki.writingfestivals', 
-        'ciniki_writingfestivals_history', $args['tnid'], 
+        'ciniki_writingfestival_history', $args['tnid'], 
         'ciniki_writingfestival_files', $args['file_id'], $args['field']);
 }
 ?>

@@ -141,6 +141,6 @@ function ciniki_writingfestivals_registrationNameUpdate(&$ciniki, $tnid, $regist
         }
     }
 
-    return array('stat'=>'ok');
+    return array('stat'=>'ok', 'display_name'=>$display_name, 'public_name'=>$public_name);
 }
 ?>

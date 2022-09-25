@@ -25,10 +25,12 @@ create table ciniki_writingfestival_adjudicators (
     festival_id int not null,
     customer_id int not null,
     flags tinyint unsigned not null,
+    image_id int not null,
+    description text not null,
     date_added datetime not null,
     last_updated datetime not null,
     primary key (id),
     unique index (uuid),
     unique index (festival_id, customer_id),
     index tenant_uuid (tnid, uuid, last_updated)
-) ENGINE='InnoDB', COMMENT='v1.01';
+) ENGINE='InnoDB', COMMENT='v1.02';

@@ -8,20 +8,21 @@
 //
 // Returns
 // -------
-// <rsp stat='ok' />
 //
-function ciniki_writingfestivals_adjudicatorUpdate(&$ciniki) {
+function ciniki_writingfestivals_sponsorUpdate(&$ciniki) {
     //
     // Find all the required and optional arguments
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'prepareArgs');
     $rc = ciniki_core_prepareArgs($ciniki, 'no', array(
         'tnid'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Tenant'),
-        'adjudicator_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Adjudicator'),
+        'sponsor_id'=>array('required'=>'yes', 'blank'=>'no', 'name'=>'Sponsor'),
         'festival_id'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Festival'),
-        'customer_id'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Customer'),
-        'image_id'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Image'),
-        'description'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Bio'),
+        'name'=>array('required'=>'no', 'blank'=>'no', 'name'=>'Name'),
+        'url'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Website'),
+        'sequence'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Order'),
+        'flags'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Options'),
+        'image_id'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Logo'),
         ));
     if( $rc['stat'] != 'ok' ) {
         return $rc;
@@ -33,7 +34,7 @@ function ciniki_writingfestivals_adjudicatorUpdate(&$ciniki) {
     // check permission to run this function for this tenant
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'writingfestivals', 'private', 'checkAccess');
-    $rc = ciniki_writingfestivals_checkAccess($ciniki, $args['tnid'], 'ciniki.writingfestivals.adjudicatorUpdate');
+    $rc = ciniki_writingfestivals_checkAccess($ciniki, $args['tnid'], 'ciniki.writingfestivals.sponsorUpdate');
     if( $rc['stat'] != 'ok' ) {
         return $rc;
     }
@@ -51,10 +52,10 @@ function ciniki_writingfestivals_adjudicatorUpdate(&$ciniki) {
     }
 
     //
-    // Update the Adjudicator in the database
+    // Update the Sponsor in the database
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectUpdate');
-    $rc = ciniki_core_objectUpdate($ciniki, $args['tnid'], 'ciniki.writingfestivals.adjudicator', $args['adjudicator_id'], $args, 0x04);
+    $rc = ciniki_core_objectUpdate($ciniki, $args['tnid'], 'ciniki.writingfestivals.sponsor', $args['sponsor_id'], $args, 0x04);
     if( $rc['stat'] != 'ok' ) {
         ciniki_core_dbTransactionRollback($ciniki, 'ciniki.writingfestivals');
         return $rc;
@@ -79,7 +80,7 @@ function ciniki_writingfestivals_adjudicatorUpdate(&$ciniki) {
     // Update the web index if enabled
     //
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'hookExec');
-    ciniki_core_hookExec($ciniki, $args['tnid'], 'ciniki', 'web', 'indexObject', array('object'=>'ciniki.writingfestivals.adjudicator', 'object_id'=>$args['adjudicator_id']));
+    ciniki_core_hookExec($ciniki, $args['tnid'], 'ciniki', 'web', 'indexObject', array('object'=>'ciniki.writingfestivals.sponsor', 'object_id'=>$args['sponsor_id']));
 
     return array('stat'=>'ok');
 }

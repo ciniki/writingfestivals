@@ -71,13 +71,7 @@ function ciniki_writingfestivals_main() {
     this.festival.nplists = {};
     this.festival.nplist = [];
     this.festival.sections = {
-        'details':{'label':'Details', 'aside':'yes', 'list':{
-            'name':{'label':'Name'},
-            'start_date':{'label':'Start'},
-            'end_date':{'label':'End'},
-            'num_registrations':{'label':'# Reg'},
-            }},
-        '_tabs':{'label':'', 'type':'paneltabs', 'selected':'sections', 'tabs':{
+        '_tabs':{'label':'', 'type':'menutabs', 'selected':'sections', 'tabs':{
             'sections':{'label':'Syllabus', 'fn':'M.ciniki_writingfestivals_main.festival.switchTab(\'sections\');'},
             'registrations':{'label':'Registrations', 'fn':'M.ciniki_writingfestivals_main.festival.switchTab(\'registrations\');'},
             'schedule':{'label':'Schedule', 'fn':'M.ciniki_writingfestivals_main.festival.switchTab(\'schedule\');'},
@@ -87,11 +81,19 @@ function ciniki_writingfestivals_main() {
             'competitors':{'label':'Competitors', 'fn':'M.ciniki_writingfestivals_main.festival.switchTab(\'competitors\');'},
             'adjudicators':{'label':'Adjudicators', 'fn':'M.ciniki_writingfestivals_main.festival.switchTab(\'adjudicators\');'},
             'files':{'label':'Files', 'fn':'M.ciniki_writingfestivals_main.festival.switchTab(\'files\');'},
-            'sponsors':{'label':'Sponsors', 
-                'visible':function() { 
-                    return (M.curTenant.modules['ciniki.sponsors'] != null && (M.curTenant.modules['ciniki.sponsors'].flags&0x02) == 0x02) ? 'yes':'no'; 
-                    },
-                'fn':'M.ciniki_writingfestivals_main.festival.switchTab(\'sponsors\');'},
+            'sponsors':{'label':'Sponsors', 'fn':'M.ciniki_writingfestivals_main.festival.switchTab(\'sponsors\');',
+                'visible':function() { return M.modFlagSet('ciniki.writingfestivals', 0x10); },
+                },
+            'winners':{'label':'Winners', 
+                'visible':function() { return M.modFlagSet('ciniki.writingfestivals', 0x80); },
+                'fn':'M.ciniki_writingfestivals_main.festival.switchTab(\'winners\');',
+                },
+            }},
+        'details':{'label':'Details', 'aside':'yes', 'list':{
+            'name':{'label':'Name'},
+            'start_date':{'label':'Start'},
+            'end_date':{'label':'End'},
+            'num_registrations':{'label':'# Reg'},
             }},
         '_stabs':{'label':'', 'type':'paneltabs', 'selected':'sections', 
             'visible':function() { return M.ciniki_writingfestivals_main.festival.sections._tabs.selected == 'sections' ? 'yes' : 'no'; },
@@ -224,15 +226,27 @@ function ciniki_writingfestivals_main() {
             'addTxt':'Add Adjudicator',
             'addFn':'M.ciniki_writingfestivals_main.adjudicator.open(\'M.ciniki_writingfestivals_main.festival.open();\',0,0,M.ciniki_writingfestivals_main.festival.festival_id,null);',
             },
-        'sponsors':{'label':'Sponsors', 'type':'simplegrid', 'num_cols':1,
+        'sponsors':{'label':'', 'type':'simplegrid', 'num_cols':2,
+            'visible':function() { return M.ciniki_writingfestivals_main.festival.sections._tabs.selected == 'sponsors' ? 'yes' : 'no'; },
+            'headerValues':['Name', 'Level'],
+            'addTxt':'Add Sponsor',
+            'addFn':'M.ciniki_writingfestivals_main.sponsor.open(\'M.ciniki_writingfestivals_main.festival.open();\',0,M.ciniki_writingfestivals_main.festival.festival_id);',
+        },
+/*        'sponsors':{'label':'Sponsors', 'type':'simplegrid', 'num_cols':1,
             'visible':function() { return M.ciniki_writingfestivals_main.festival.sections._tabs.selected == 'sponsors' ? 'yes' : 'no'; },
             'addTxt':'Manage Sponsors',
             'addFn':'M.startApp(\'ciniki.sponsors.ref\',null,\'M.ciniki_writingfestivals_main.festival.open();\',\'mc\',{\'object\':\'ciniki.writingfestivals.festival\',\'object_id\':M.ciniki_writingfestivals_main.festival.festival_id});',
-        },
+        }, */
         'files':{'label':'', 'type':'simplegrid', 'num_cols':1,
             'visible':function() { return M.ciniki_writingfestivals_main.festival.sections._tabs.selected == 'files' ? 'yes' : 'no'; },
             'addTxt':'Add File',
             'addFn':'M.ciniki_writingfestivals_main.addfile.open(\'M.ciniki_writingfestivals_main.festival.open();\',M.ciniki_writingfestivals_main.festival.festival_id);',
+            },
+        'winners':{'label':'', 'type':'simplegrid', 'num_cols':4,
+            'headerValues':['Category', 'Award', 'Title', 'Author'],
+            'visible':function() { return M.ciniki_writingfestivals_main.festival.sections._tabs.selected == 'winners' ? 'yes' : 'no'; },
+            'addTxt':'Add Winner',
+            'addFn':'M.ciniki_writingfestivals_main.winner.open(\'M.ciniki_writingfestivals_main.festival.open();\',0,M.ciniki_writingfestivals_main.festival.festival_id);',
             },
     }
     this.festival.downloadProgramPDF = function() {
@@ -371,9 +385,23 @@ function ciniki_writingfestivals_main() {
         if( s == 'files' ) {
             return d.name;
         }
-        if( s == 'sponsors' && j == 0 ) {
-            return '<span class="maintext">' + d.sponsor.title + '</span>';
+        if( s == 'sponsors' ) {
+            switch(j) { 
+                case 0: return d.name;
+                case 1: return d.level;
+            }
         }
+        if( s == 'winners' ) {
+            switch(j) {
+                case 0: return d.category;
+                case 1: return d.award;
+                case 2: return d.title;
+                case 3: return d.author;
+            }
+        }
+/*        if( s == 'sponsors' && j == 0 ) {
+            return '<span class="maintext">' + d.sponsor.title + '</span>';
+        } */
     }
     this.festival.cellSortValue = function(s, i , j, d) {
         if( s == 'registrations' ) {
@@ -401,7 +429,9 @@ function ciniki_writingfestivals_main() {
             case 'competitors': return 'M.ciniki_writingfestivals_main.competitor.open(\'M.ciniki_writingfestivals_main.festival.open();\',\'' + d.id + '\',M.ciniki_writingfestivals_main.festival.festival_id);';
             case 'adjudicators': return 'M.ciniki_writingfestivals_main.adjudicator.open(\'M.ciniki_writingfestivals_main.festival.open();\',\'' + d.id + '\',0,M.ciniki_writingfestivals_main.festival.festival_id, M.ciniki_writingfestivals_main.festival.nplists.adjudicators);';
             case 'files': return 'M.ciniki_writingfestivals_main.editfile.open(\'M.ciniki_writingfestivals_main.festival.open();\',\'' + d.id + '\');';
-            case 'sponsors': return 'M.startApp(\'ciniki.sponsors.ref\',null,\'M.ciniki_writingfestivals_main.festival.open();\',\'mc\',{\'ref_id\':\'' + d.sponsor.ref_id + '\'});';
+            case 'sponsors': return 'M.ciniki_writingfestivals_main.sponsor.open(\'M.ciniki_writingfestivals_main.festival.open();\',\'' + d.id + '\');';
+            case 'winners': return 'M.ciniki_writingfestivals_main.winner.open(\'M.ciniki_writingfestivals_main.festival.open();\',\'' + d.id + '\');';
+            //case 'sponsors': return 'M.startApp(\'ciniki.sponsors.ref\',null,\'M.ciniki_writingfestivals_main.festival.open();\',\'mc\',{\'ref_id\':\'' + d.sponsor.ref_id + '\'});';
         }
         return '';
     }
@@ -489,6 +519,8 @@ function ciniki_writingfestivals_main() {
             args['adjudicators'] = 'yes';
         } else if( this.sections._tabs.selected == 'files' ) {
             args['files'] = 'yes';
+        } else if( this.sections._tabs.selected == 'winners' ) {
+            args['winners'] = 'yes';
         } else if( this.sections._tabs.selected == 'sponsors' ) {
             args['sponsors'] = 'yes';
         }
@@ -592,8 +624,15 @@ function ciniki_writingfestivals_main() {
             'end_date':{'label':'End', 'type':'date'},
             'status':{'label':'Status', 'type':'toggle', 'toggles':{'10':'Active', '30':'Published', '60':'Archived'}},
             'flags1':{'label':'Online Registrations', 'type':'flagtoggle', 'default':'off', 'bit':0x01, 'field':'flags'},
-            'flags2':{'label':'Virtual Event', 'type':'flagtoggle', 'default':'off', 'bit':0x02, 'field':'flags'},
-            'earlybird_date':{'label':'Earlybird End', 'type':'date'},
+            //'flags2':{'label':'Virtual Event', 'type':'flagtoggle', 'default':'off', 'bit':0x02, 'field':'flags'},
+            'flags2':{'label':'Virtual Option', 'type':'flagtoggle', 'default':'off', 'bit':0x02, 'field':'flags',
+                'on_fields':['flags3','virtual_date'],
+                },
+            'flags3':{'label':'Virtual Pricing', 'type':'flagtoggle', 'default':'off', 'bit':0x04, 'field':'flags', 'visible':'no'},
+            //'earlybird_date':{'label':'Earlybird End', 'type':'date'},
+            'earlybird_date':{'label':'Earlybird Deadline', 'type':'datetime'},
+            'live_date':{'label':'Live Deadline', 'type':'datetime'},
+            'virtual_date':{'label':'Virtual Deadline', 'type':'datetime', 'visible':'no'},
             }},
         '_settings':{'label':'', 'aside':'yes', 'fields':{
             'age-restriction-msg':{'label':'Age Restriction Message', 'type':'text'},
@@ -693,6 +732,12 @@ function ciniki_writingfestivals_main() {
             }
             var p = M.ciniki_writingfestivals_main.edit;
             p.data = rsp.festival;
+            if( (rsp.festival.flags&0x02) == 0x02 ) {
+                p.sections.general.fields.flags3.visible = 'yes';
+                p.sections.general.fields.virtual_date.visible = 'yes';
+            } else {
+                p.sections.general.fields.virtual_date.visible = 'no';
+            }
             p.refresh();
             p.show(cb);
         });
@@ -769,8 +814,8 @@ function ciniki_writingfestivals_main() {
                     return true;
                     },
                 'addDropImageRefresh':'',
-                'addDropImage':function(fid) {
-                    M.ciniki_writingfestivals_main.section.setFieldValue(fid,0);
+                'deleteImage':function(fid) {
+                    M.ciniki_writingfestivals_main.section.setFieldValue('primary_image_id',0);
                     return true;
                  },
              },
@@ -2180,20 +2225,36 @@ function ciniki_writingfestivals_main() {
     //
     // Adjudicators
     //
-    this.adjudicator = new M.panel('Adjudicator', 'ciniki_writingfestivals_main', 'adjudicator', 'mc', 'medium', 'sectioned', 'ciniki.writingfestivals.main.adjudicator');
+    this.adjudicator = new M.panel('Adjudicator', 'ciniki_writingfestivals_main', 'adjudicator', 'mc', 'medium mediumaside', 'sectioned', 'ciniki.writingfestivals.main.adjudicator');
     this.adjudicator.data = null;
     this.adjudicator.festival_id = 0;
     this.adjudicator.adjudicator_id = 0;
     this.adjudicator.customer_id = 0;
     this.adjudicator.nplist = [];
     this.adjudicator.sections = {
-        'customer_details':{'label':'Adjudicator', 'type':'simplegrid', 'num_cols':2,
+        '_image_id':{'label':'Adjudicator Photo', 'type':'imageform', 'aside':'yes', 'fields':{
+            'image_id':{'label':'', 'type':'image_id', 'hidelabel':'yes', 'controls':'all', 'history':'no',
+                'addDropImage':function(iid) {
+                    M.ciniki_writingfestivals_main.adjudicator.setFieldValue('image_id', iid);
+                    return true;
+                    },
+                'addDropImageRefresh':'',
+                'deleteImage':function(fid) {
+                    M.ciniki_writingfestivals_main.adjudicator.setFieldValue(fid,0);
+                    return true;
+                 },
+             },
+        }}, 
+        'customer_details':{'label':'Adjudicator', 'type':'simplegrid', 'num_cols':2, 'aside':'yes',
             'cellClasses':['label', ''],
             'addTxt':'Edit',
             'addFn':'M.startApp(\'ciniki.customers.edit\',null,\'M.ciniki_writingfestivals_main.adjudicator.updateCustomer();\',\'mc\',{\'next\':\'M.ciniki_writingfestivals_main.adjudicator.updateCustomer\',\'customer_id\':M.ciniki_writingfestivals_main.adjudicator.data.customer_id});',
             'changeTxt':'Change customer',
             'changeFn':'M.startApp(\'ciniki.customers.edit\',null,\'M.ciniki_writingfestivals_main.adjudicator.updateCustomer();\',\'mc\',{\'next\':\'M.ciniki_writingfestivals_main.adjudicator.updateCustomer\',\'customer_id\':0});',
             },
+        '_description':{'label':'Full Bio', 'fields':{
+            'description':{'label':'', 'hidelabel':'yes', 'type':'textarea', 'size':'xlarge'},
+            }},
         '_buttons':{'label':'', 'buttons':{
             'save':{'label':'Save', 'fn':'M.ciniki_writingfestivals_main.adjudicator.save();'},
             'delete':{'label':'Remove Adjudicator', 
@@ -2495,6 +2556,230 @@ function ciniki_writingfestivals_main() {
     }
     this.emailregistrations.addButton('send', 'Send', 'M.ciniki_writingfestivals_main.emailregistrations.send();');
     this.emailregistrations.addClose('Cancel');
+
+    //
+    // The panel to edit Winner
+    //
+    this.winner = new M.panel('Winner', 'ciniki_writingfestivals_main', 'winner', 'mc', 'medium mediumaside', 'sectioned', 'ciniki.writingfestivals.main.winner');
+    this.winner.data = null;
+    this.winner.winner_id = 0;
+    this.winner.nplist = [];
+    this.winner.sections = {
+        '_image_id':{'label':'Image', 'type':'imageform', 'aside':'yes', 'fields':{
+            'image_id':{'label':'', 'type':'image_id', 'hidelabel':'yes', 'controls':'all', 'history':'no',
+                'addDropImage':function(iid) {
+                    M.ciniki_writingfestivals_main.winner.setFieldValue('image_id', iid);
+                    return true;
+                    },
+                'addDropImageRefresh':'',
+             },
+        }},
+        'general':{'label':'', 'aside':'yes', 'fields':{
+            'category':{'label':'Category', 'required':'yes', 'type':'text'},
+            'award':{'label':'Award', 'required':'yes', 'type':'text'},
+            'title':{'label':'Title', 'type':'text'},
+            'author':{'label':'Author', 'type':'text'},
+            'sequence':{'label':'Order', 'type':'text', 'size':'small'},
+            }},
+        '_synopsis':{'label':'Synopsis', 'aside':'yes', 'fields':{
+            'synopsis':{'label':'', 'hidelabel':'yes', 'type':'textarea', 'size':'small'},
+            }},
+        '_intro':{'label':'Introduction', 'fields':{
+            'intro':{'label':'', 'hidelabel':'yes', 'type':'textarea', 'size':'medium'},
+            }},
+        '_content':{'label':'Content', 'fields':{
+            'content':{'label':'', 'hidelabel':'yes', 'type':'textarea', 'size':'large'},
+            }},
+        '_buttons':{'label':'', 'buttons':{
+            'save':{'label':'Save', 'fn':'M.ciniki_writingfestivals_main.winner.save();'},
+            'delete':{'label':'Delete', 
+                'visible':function() {return M.ciniki_writingfestivals_main.winner.winner_id > 0 ? 'yes' : 'no'; },
+                'fn':'M.ciniki_writingfestivals_main.winner.remove();'},
+            }},
+        };
+    this.winner.fieldValue = function(s, i, d) { return this.data[i]; }
+    this.winner.fieldHistoryArgs = function(s, i) {
+        return {'method':'ciniki.writingfestivals.winnerHistory', 'args':{'tnid':M.curTenantID, 'winner_id':this.winner_id, 'field':i}};
+    }
+    this.winner.open = function(cb, wid, fid, list) {
+        if( wid != null ) { this.winner_id = wid; }
+        if( fid != null ) { this.festival_id = fid; }
+        if( list != null ) { this.nplist = list; }
+        M.api.getJSONCb('ciniki.writingfestivals.winnerGet', {'tnid':M.curTenantID, 'winner_id':this.winner_id}, function(rsp) {
+            if( rsp.stat != 'ok' ) {
+                M.api.err(rsp);
+                return false;
+            }
+            var p = M.ciniki_writingfestivals_main.winner;
+            p.data = rsp.winner;
+            p.refresh();
+            p.show(cb);
+        });
+    }
+    this.winner.save = function(cb) {
+        if( cb == null ) { cb = 'M.ciniki_writingfestivals_main.winner.close();'; }
+        if( !this.checkForm() ) { return false; }
+        if( this.winner_id > 0 ) {
+            var c = this.serializeForm('no');
+            if( c != '' ) {
+                M.api.postJSONCb('ciniki.writingfestivals.winnerUpdate', {'tnid':M.curTenantID, 'winner_id':this.winner_id}, c, function(rsp) {
+                    if( rsp.stat != 'ok' ) {
+                        M.api.err(rsp);
+                        return false;
+                    }
+                    eval(cb);
+                });
+            } else {
+                eval(cb);
+            }
+        } else {
+            var c = this.serializeForm('yes');
+            M.api.postJSONCb('ciniki.writingfestivals.winnerAdd', {'tnid':M.curTenantID, 'festival_id':this.festival_id}, c, function(rsp) {
+                if( rsp.stat != 'ok' ) {
+                    M.api.err(rsp);
+                    return false;
+                }
+                M.ciniki_writingfestivals_main.winner.winner_id = rsp.id;
+                eval(cb);
+            });
+        }
+    }
+    this.winner.remove = function() {
+        if( confirm('Are you sure you want to remove winner?') ) {
+            M.api.getJSONCb('ciniki.writingfestivals.winnerDelete', {'tnid':M.curTenantID, 'winner_id':this.winner_id}, function(rsp) {
+                if( rsp.stat != 'ok' ) {
+                    M.api.err(rsp);
+                    return false;
+                }
+                M.ciniki_writingfestivals_main.winner.close();
+            });
+        }
+    }
+    this.winner.nextButtonFn = function() {
+        if( this.nplist != null && this.nplist.indexOf('' + this.winner_id) < (this.nplist.length - 1) ) {
+            return 'M.ciniki_writingfestivals_main.winner.save(\'M.ciniki_writingfestivals_main.winner.open(null,' + this.nplist[this.nplist.indexOf('' + this.winner_id) + 1] + ');\');';
+        }
+        return null;
+    }
+    this.winner.prevButtonFn = function() {
+        if( this.nplist != null && this.nplist.indexOf('' + this.winner_id) > 0 ) {
+            return 'M.ciniki_writingfestivals_main.winner.save(\'M.ciniki_writingfestivals_main.winner.open(null,' + this.nplist[this.nplist.indexOf('' + this.winner_id) - 1] + ');\');';
+        }
+        return null;
+    }
+    this.winner.addButton('save', 'Save', 'M.ciniki_writingfestivals_main.winner.save();');
+    this.winner.addClose('Cancel');
+    this.winner.addButton('next', 'Next');
+    this.winner.addLeftButton('prev', 'Prev');
+
+    //
+    // The panel to edit Sponsor
+    //
+    this.sponsor = new M.panel('Sponsor', 'ciniki_writingfestivals_main', 'sponsor', 'mc', 'medium', 'sectioned', 'ciniki.writingfestivals.main.sponsor');
+    this.sponsor.data = null;
+    this.sponsor.festival_id = 0;
+    this.sponsor.sponsor_id = 0;
+    this.sponsor.nplist = [];
+    this.sponsor.sections = {
+        '_image_id':{'label':'Logo', 'type':'imageform', 'aside':'yes', 'fields':{
+            'image_id':{'label':'', 'type':'image_id', 'hidelabel':'yes', 'controls':'all', 'history':'no',
+                'addDropImage':function(iid) {
+                    M.ciniki_writingfestivals_main.sponsor.setFieldValue('image_id', iid);
+                    return true;
+                    },
+                'addDropImageRefresh':'',
+                'deleteImage':function(fid) {
+                    M.ciniki_writingfestivals_main.sponsor.setFieldValue(fid, 0);
+                    return true;
+                    },
+             },
+        }},
+        'general':{'label':'', 'fields':{
+            'name':{'label':'Name', 'required':'yes', 'type':'text'},
+            'url':{'label':'Website', 'type':'text'},
+            'sequence':{'label':'Order', 'type':'text', 'size':'small'},
+            'flags':{'label':'Options', 'type':'flags', 'flags':{'1':{'name':'Level 1'}, '2':{'name':'Level 2'}}},
+            }},
+        '_buttons':{'label':'', 'buttons':{
+            'save':{'label':'Save', 'fn':'M.ciniki_writingfestivals_main.sponsor.save();'},
+            'delete':{'label':'Delete', 
+                'visible':function() {return M.ciniki_writingfestivals_main.sponsor.sponsor_id > 0 ? 'yes' : 'no'; },
+                'fn':'M.ciniki_writingfestivals_main.sponsor.remove();'},
+            }},
+        };
+    this.sponsor.fieldValue = function(s, i, d) { return this.data[i]; }
+    this.sponsor.fieldHistoryArgs = function(s, i) {
+        return {'method':'ciniki.writingfestivals.sponsorHistory', 'args':{'tnid':M.curTenantID, 'sponsor_id':this.sponsor_id, 'field':i}};
+    }
+    this.sponsor.open = function(cb, sid, fid) {
+        if( sid != null ) { this.sponsor_id = sid; }
+        if( fid != null ) { this.festival_id = fid; }
+        M.api.getJSONCb('ciniki.writingfestivals.sponsorGet', {'tnid':M.curTenantID, 'sponsor_id':this.sponsor_id, 'festival_id':this.festival_id}, function(rsp) {
+            if( rsp.stat != 'ok' ) {
+                M.api.err(rsp);
+                return false;
+            }
+            var p = M.ciniki_writingfestivals_main.sponsor;
+            p.data = rsp.sponsor;
+            p.refresh();
+            p.show(cb);
+        });
+    }
+    this.sponsor.save = function(cb) {
+        if( cb == null ) { cb = 'M.ciniki_writingfestivals_main.sponsor.close();'; }
+        if( !this.checkForm() ) { return false; }
+        if( this.sponsor_id > 0 ) {
+            var c = this.serializeForm('no');
+            if( c != '' ) {
+                M.api.postJSONCb('ciniki.writingfestivals.sponsorUpdate', {'tnid':M.curTenantID, 'sponsor_id':this.sponsor_id}, c, function(rsp) {
+                    if( rsp.stat != 'ok' ) {
+                        M.api.err(rsp);
+                        return false;
+                    }
+                    eval(cb);
+                });
+            } else {
+                eval(cb);
+            }
+        } else {
+            var c = this.serializeForm('yes');
+            M.api.postJSONCb('ciniki.writingfestivals.sponsorAdd', {'tnid':M.curTenantID, 'festival_id':this.festival_id}, c, function(rsp) {
+                if( rsp.stat != 'ok' ) {
+                    M.api.err(rsp);
+                    return false;
+                }
+                M.ciniki_writingfestivals_main.sponsor.sponsor_id = rsp.id;
+                eval(cb);
+            });
+        }
+    }
+    this.sponsor.remove = function() {
+        if( confirm('Are you sure you want to remove sponsor?') ) {
+            M.api.getJSONCb('ciniki.writingfestivals.sponsorDelete', {'tnid':M.curTenantID, 'sponsor_id':this.sponsor_id}, function(rsp) {
+                if( rsp.stat != 'ok' ) {
+                    M.api.err(rsp);
+                    return false;
+                }
+                M.ciniki_writingfestivals_main.sponsor.close();
+            });
+        }
+    }
+    this.sponsor.nextButtonFn = function() {
+        if( this.nplist != null && this.nplist.indexOf('' + this.sponsor_id) < (this.nplist.length - 1) ) {
+            return 'M.ciniki_writingfestivals_main.sponsor.save(\'M.ciniki_writingfestivals_main.sponsor.open(null,' + this.nplist[this.nplist.indexOf('' + this.sponsor_id) + 1] + ');\');';
+        }
+        return null;
+    }
+    this.sponsor.prevButtonFn = function() {
+        if( this.nplist != null && this.nplist.indexOf('' + this.sponsor_id) > 0 ) {
+            return 'M.ciniki_writingfestivals_main.sponsor.save(\'M.ciniki_writingfestivals_main.sponsor.open(null,' + this.nplist[this.nplist.indexOf('' + this.sponsor_id) - 1] + ');\');';
+        }
+        return null;
+    }
+    this.sponsor.addButton('save', 'Save', 'M.ciniki_writingfestivals_main.sponsor.save();');
+    this.sponsor.addClose('Cancel');
+    this.sponsor.addButton('next', 'Next');
+    this.sponsor.addLeftButton('prev', 'Prev');
 
     //
     // Start the app

@@ -36,6 +36,7 @@ function ciniki_writingfestivals_festivalGet($ciniki) {
         'adjudicators'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Adjudicators'),
         'comments'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Comments'),
         'files'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Files'),
+        'winners'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Winners'),
         'sponsors'=>array('required'=>'no', 'blank'=>'yes', 'name'=>'Sponsors'),
         ));
     if( $rc['stat'] != 'ok' ) {
@@ -67,6 +68,9 @@ function ciniki_writingfestivals_festivalGet($ciniki) {
 
     ciniki_core_loadMethod($ciniki, 'ciniki', 'users', 'private', 'dateFormat');
     $date_format = ciniki_users_dateFormat($ciniki, 'php');
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'users', 'private', 'datetimeFormat');
+    $datetime_format = ciniki_users_datetimeFormat($ciniki, 'php');
+    
 
     //
     // Load conference maps
@@ -125,6 +129,8 @@ function ciniki_writingfestivals_festivalGet($ciniki) {
             . "ciniki_writingfestivals.status, "
             . "ciniki_writingfestivals.flags, "
             . "ciniki_writingfestivals.earlybird_date, "
+            . "ciniki_writingfestivals.live_date, "
+            . "ciniki_writingfestivals.virtual_date, "
             . "ciniki_writingfestivals.primary_image_id, "
             . "ciniki_writingfestivals.description, "
             . "ciniki_writingfestivals.document_logo_id, "
@@ -137,12 +143,16 @@ function ciniki_writingfestivals_festivalGet($ciniki) {
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
         $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'ciniki.writingfestivals', array(
             array('container'=>'festivals', 'fname'=>'id', 
-                'fields'=>array('name', 'permalink', 'start_date', 'end_date', 'status', 'flags', 'earlybird_date',
+                'fields'=>array('name', 'permalink', 'start_date', 'end_date', 'status', 'flags', 
+                    'earlybird_date', 'live_date', 'virtual_date',
                     'primary_image_id', 'description', 
                     'document_logo_id', 'document_header_msg', 'document_footer_msg'),
                 'utctotz'=>array('start_date'=>array('timezone'=>'UTC', 'format'=>$date_format),
                     'end_date'=>array('timezone'=>'UTC', 'format'=>$date_format),
-                    'earlybird_date'=>array('timezone'=>'UTC', 'format'=>$date_format)),
+                    'earlybird_date'=>array('timezone'=>$intl_timezone, 'format'=>$datetime_format),
+                    'live_date'=>array('timezone'=>$intl_timezone, 'format'=>$datetime_format),
+                    'virtual_date'=>array('timezone'=>$intl_timezone, 'format'=>$datetime_format),
+                    ),
                 ),
             ));
         if( $rc['stat'] != 'ok' ) {
@@ -795,17 +805,70 @@ function ciniki_writingfestivals_festivalGet($ciniki) {
             if( $rc['stat'] != 'ok' ) {
                 return $rc;
             }
-            if( isset($rc['files']) ) {
-                $festival['files'] = $rc['files'];
-            } else {
-                $festival['files'] = array();
+            $festival['files'] = isset($rc['files']) ? $rc['files'] : array();
+        }
+
+        //
+        // Get any winners for this festival
+        //
+        if( isset($args['winners']) && $args['winners'] == 'yes' ) {
+            $strsql = "SELECT id, category, award, title, author "
+                . "FROM ciniki_writingfestival_winners "
+                . "WHERE festival_id = '" . ciniki_core_dbQuote($ciniki, $args['festival_id']) . "' " . "AND tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+                . "ORDER BY category, sequence, award, title, author "
+                . "";
+            ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
+            $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'ciniki.writingfestivals', array(
+                array('container'=>'winners', 'fname'=>'id', 
+                    'fields'=>array('id', 'category', 'award', 'title', 'author')),
+                ));
+            if( $rc['stat'] != 'ok' ) {
+                return $rc;
+            }
+            $festival['winners'] = isset($rc['winners']) ? $rc['winners'] : array();
+            error_log(print_r($festival,true));
+        }
+
+        if( isset($args['sponsors']) && $args['sponsors'] == 'yes' 
+            && ciniki_core_checkModuleFlags($ciniki, 'ciniki.writingfestivals', 0x10)
+            ) {
+            $strsql = "SELECT sponsors.id, "
+                . "sponsors.name, "
+                . "sponsors.url, "
+                . "sponsors.sequence, "
+                . "sponsors.flags "
+                . "FROM ciniki_writingfestival_sponsors AS sponsors "
+                . "WHERE sponsors.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+                . "AND sponsors.festival_id = '" . ciniki_core_dbQuote($ciniki, $args['festival_id']) . "' "
+                . "ORDER BY sponsors.flags DESC, sponsors.sequence "
+                . "";
+            ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
+            $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'ciniki.writingfestivals', array(
+                array('container'=>'sponsors', 'fname'=>'id', 
+                    'fields'=>array('id', 'name', 'url', 'sequence', 'flags')),
+                ));
+            if( $rc['stat'] != 'ok' ) {
+                return $rc;
+            }
+            $festival['sponsors'] = isset($rc['sponsors']) ? $rc['sponsors'] : array();
+            foreach($festival['sponsors'] as $sid => $sponsor) {
+                $festival['sponsors'][$sid]['level'] = '';
+                if( ($sponsor['flags']&0x01) == 0x01 ) {
+                    $festival['sponsors'][$sid]['level'] = ($festival['sponsors'][$sid]['level'] != '' ? ', ' : '') . '1';
+                }
+                if( ($sponsor['flags']&0x02) == 0x02 ) {
+                    $festival['sponsors'][$sid]['level'] = ($festival['sponsors'][$sid]['level'] != '' ? ', ' : '') . '2';
+                }
+                if( ($sponsor['flags']&0x04) == 0x04 ) {
+                    $festival['sponsors'][$sid]['level'] = ($festival['sponsors'][$sid]['level'] != '' ? ', ' : '') . '3';
+                }
             }
         }
 
         //
         // Get any sponsors for this festival, and that references for sponsors is enabled
         //
-        if( isset($args['sponsors']) && $args['sponsors'] == 'yes' 
+/*        if( isset($args['sponsors']) && $args['sponsors'] == 'yes' 
             && isset($ciniki['tenant']['modules']['ciniki.sponsors']) 
             && ($ciniki['tenant']['modules']['ciniki.sponsors']['flags']&0x02) == 0x02
             ) {
@@ -818,7 +881,7 @@ function ciniki_writingfestivals_festivalGet($ciniki) {
             if( isset($rc['sponsors']) ) {
                 $festival['sponsors'] = $rc['sponsors'];
             }
-        }
+        } */
 
         //
         // Get the number of registrations 

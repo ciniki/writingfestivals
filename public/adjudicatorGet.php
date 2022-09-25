@@ -71,14 +71,17 @@ function ciniki_writingfestivals_adjudicatorGet($ciniki) {
     else {
         $strsql = "SELECT ciniki_writingfestival_adjudicators.id, "
             . "ciniki_writingfestival_adjudicators.festival_id, "
-            . "ciniki_writingfestival_adjudicators.customer_id "
+            . "ciniki_writingfestival_adjudicators.customer_id, "
+            . "ciniki_writingfestival_adjudicators.image_id, "
+            . "ciniki_writingfestival_adjudicators.description "
             . "FROM ciniki_writingfestival_adjudicators "
             . "WHERE ciniki_writingfestival_adjudicators.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
             . "AND ciniki_writingfestival_adjudicators.id = '" . ciniki_core_dbQuote($ciniki, $args['adjudicator_id']) . "' "
             . "";
         ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
         $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'ciniki.writingfestivals', array(
-            array('container'=>'adjudicators', 'fname'=>'id', 'fields'=>array('festival_id', 'customer_id'),
+            array('container'=>'adjudicators', 'fname'=>'id', 
+                'fields'=>array('festival_id', 'customer_id', 'image_id', 'description'),
                 ),
             ));
         if( $rc['stat'] != 'ok' ) {

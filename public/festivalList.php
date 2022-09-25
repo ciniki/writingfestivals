@@ -48,6 +48,7 @@ function ciniki_writingfestivals_festivalList($ciniki) {
         . "ciniki_writingfestivals.earlybird_date "
         . "FROM ciniki_writingfestivals "
         . "WHERE ciniki_writingfestivals.tnid = '" . ciniki_core_dbQuote($ciniki, $args['tnid']) . "' "
+        . "ORDER BY start_date DESC "
         . "";
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
     $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'ciniki.writingfestivals', array(

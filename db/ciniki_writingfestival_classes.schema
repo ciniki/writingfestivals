@@ -46,6 +46,7 @@ create table ciniki_writingfestival_classes (
     flags tinyint unsigned not null,
     earlybird_fee decimal(19,6) not null,
     fee decimal(19,6) not null,
+    virtual_fee decimal(19,6) not null,
     date_added datetime not null,
     last_updated datetime not null,
     primary key (id),
@@ -53,4 +54,4 @@ create table ciniki_writingfestival_classes (
     unique index (festival_id, permalink),
     unique index (festival_id, code),
     index tenant_uuid (tnid, uuid, last_updated)
-) ENGINE='InnoDB', COMMENT='v1.01';
+) ENGINE='InnoDB', COMMENT='v1.02';

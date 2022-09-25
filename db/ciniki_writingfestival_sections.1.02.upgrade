@@ -1,0 +1,5 @@
+#
+# Added flags for additional options
+#
+ALTER TABLE ciniki_writingfestival_sections ADD COLUMN flags tinyint unsigned not null AFTER sequence;
+ALTER TABLE ciniki_writingfestival_sections COMMENT='v1.02';

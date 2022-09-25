@@ -46,6 +46,6 @@ function ciniki_writingfestivals_adjudicatorHistory($ciniki) {
     }
 
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbGetModuleHistory');
-    return ciniki_core_dbGetModuleHistory($ciniki, 'ciniki.writingfestivals', 'ciniki_writingfestivals_history', $args['tnid'], 'ciniki_writingfestival_adjudicators', $args['adjudicator_id'], $args['field']);
+    return ciniki_core_dbGetModuleHistory($ciniki, 'ciniki.writingfestivals', 'ciniki_writingfestival_history', $args['tnid'], 'ciniki_writingfestival_adjudicators', $args['adjudicator_id'], $args['field']);
 }
 ?>

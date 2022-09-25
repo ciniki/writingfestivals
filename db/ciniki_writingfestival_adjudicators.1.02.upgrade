@@ -1,0 +1,6 @@
+#
+# Add adjudicator image and bio
+#
+ALTER TABLE ciniki_writingfestival_adjudicators ADD COLUMN image_id int not null AFTER flags;
+ALTER TABLE ciniki_writingfestival_adjudicators ADD COLUMN description text not null AFTER image_id;
+ALTER TABLE ciniki_writingfestival_adjudicators COMMENT='v1.02';
