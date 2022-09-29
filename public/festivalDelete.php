@@ -130,7 +130,7 @@ function ciniki_writingfestivals_festivalDelete(&$ciniki) {
     //
     // Check if any modules are currently using this object
     //
-    ciniki_core_loadMethod(, 'ciniki', 'core', 'private', 'objectCheckUsed');
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectCheckUsed');
     $rc = ciniki_core_objectCheckUsed($ciniki, $args['tnid'], 'ciniki.writingfestivals.festival', $args['festival_id']);
     if( $rc['stat'] != 'ok' ) {
         return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.6', 'msg'=>'Unable to check if  is still being used.', 'err'=>$rc['err']));
