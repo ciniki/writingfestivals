@@ -697,7 +697,7 @@ function ciniki_writingfestivals_main() {
                 'fn':'M.ciniki_writingfestivals_main.edit.updateNames();'},
             'delete':{'label':'Delete', 
                 'visible':function() {return M.ciniki_writingfestivals_main.edit.festival_id > 0 ? 'yes' : 'no'; },
-                'fn':'M.ciniki_writingfestivals_main.edit.save();'},
+                'fn':'M.ciniki_writingfestivals_main.edit.remove();'},
             }},
         };
     this.edit.fieldValue = function(s, i, d) { return this.data[i]; }
