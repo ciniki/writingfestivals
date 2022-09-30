@@ -77,7 +77,7 @@ function ciniki_writingfestivals_wng_winnerProcess(&$ciniki, $tnid, &$request, $
     
     $request['breadcrumbs'][] = array(
         'page-class' => 'page-winner',
-        'url' => $request['page']['page'] . '/' . $winner_permalink,
+        'url' => $request['page']['path'] . '/' . $winner_permalink,
         );
 
     //
@@ -113,6 +113,6 @@ function ciniki_writingfestivals_wng_winnerProcess(&$ciniki, $tnid, &$request, $
         'content' => $winner['content'],
     );
 
-    return array('stat'=>'ok', 'blocks'=>$blocks, 'stop'=>'yes');
+    return array('stat'=>'ok', 'blocks'=>$blocks, 'stop'=>'yes', 'clear'=>'yes');
 }
 ?>

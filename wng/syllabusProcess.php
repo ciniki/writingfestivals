@@ -92,19 +92,15 @@ function ciniki_writingfestivals_wng_syllabusProcess(&$ciniki, $tnid, &$request,
     // Display as trading cards
     //
     if( isset($s['layout']) && $s['layout'] == 'tradingcards' ) {
-        $padding = '';
-        if( isset($s['thumbnail-format']) && $s['thumbnail-format'] == 'square-padded' && isset($s['thumbnail-padding-color']) ) {
-            $padding = $s['thumbnail-padding-color'];
-        }
         foreach($sections as $sid => $section) {
-            $sections[$sid]['url'] = $request['page']['path'] . '/' . $section['permalink'];
+            $sections[$sid]['url'] = ($request['page']['path'] != '/' ? $request['page']['path'] : '') . '/' . $section['permalink'];
             $sections[$sid]['button-class'] = isset($s['button-class']) && $s['button-class'] != '' ? $s['button-class'] : 'button';
             $sections[$sid]['button-1-text'] = 'View Syllabus';
-            $sections[$sid]['button-1-url'] = $request['page']['path'] . '/' . $section['permalink'];
+            $sections[$sid]['button-1-url'] = ($request['page']['path'] != '/' ? $request['page']['path'] : '') . '/' . $section['permalink'];
         }
         $blocks[] = array(
             'type' => 'tradingcards',
-            'padding' => $padding,
+            'image-format' => (isset($s['image-format']) && $s['image-format'] == 'padded' ? 'padded' : 'cropped'),
             'items' => $sections,
             );
     } 

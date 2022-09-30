@@ -33,17 +33,6 @@ function ciniki_writingfestivals_wng_winnersProcess(&$ciniki, $tnid, &$request, 
     }
 
     //
-    // Check for syllabus section requested
-    //
-    if( isset($request['uri_split'][($request['cur_uri_pos']+1)])
-        && $request['uri_split'][($request['cur_uri_pos']+1)] != '' 
-        ) {
-        $request['cur_uri_pos']++;
-        ciniki_core_loadMethod($ciniki, 'ciniki', 'writingfestivals', 'wng', 'winnerProcess');
-        return ciniki_writingfestivals_wng_winnerProcess($ciniki, $tnid, $request, $section);
-    }
-
-    //
     // Check for image format
     //
     $thumbnail_format = 'square-cropped';
@@ -71,9 +60,9 @@ function ciniki_writingfestivals_wng_winnersProcess(&$ciniki, $tnid, &$request, 
         . "AND winners.festival_id = '" . ciniki_core_dbQuote($ciniki, $s['festival-id']) . "' "
         . "ORDER BY category, sequence, award, title, author "
         . "";
-    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
-    $rc = ciniki_core_dbHashQueryArrayTree($ciniki, $strsql, 'ciniki.writingfestivals', array(
-        array('container'=>'winners', 'fname'=>'id', 
+    ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryIDTree');
+    $rc = ciniki_core_dbHashQueryIDTree($ciniki, $strsql, 'ciniki.writingfestivals', array(
+        array('container'=>'winners', 'fname'=>'permalink', 
             'fields'=>array(
                 'id', 'permalink', 'category', 'award', 'title', 'author', 'permalink', 'synopsis'),
             ),
@@ -82,6 +71,18 @@ function ciniki_writingfestivals_wng_winnersProcess(&$ciniki, $tnid, &$request, 
         return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.219', 'msg'=>'Unable to load winners', 'err'=>$rc['err']));
     }
     $winners = isset($rc['winners']) ? $rc['winners'] : array();
+
+    //
+    // Check for syllabus section requested
+    //
+    if( isset($request['uri_split'][($request['cur_uri_pos']+1)])
+        && $request['uri_split'][($request['cur_uri_pos']+1)] != '' 
+        && isset($winners[$request['uri_split'][($request['cur_uri_pos']+1)]])
+        ) {
+        $request['cur_uri_pos']++;
+        ciniki_core_loadMethod($ciniki, 'ciniki', 'writingfestivals', 'wng', 'winnerProcess');
+        return ciniki_writingfestivals_wng_winnerProcess($ciniki, $tnid, $request, $section);
+    }
 
     //
     // Add the title block

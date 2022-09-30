@@ -57,6 +57,10 @@ function ciniki_writingfestivals_wng_sections(&$ciniki, $tnid, $args) {
                 'tradingcards' => 'Trading Cards',
                 'imagebuttons' => 'Image Buttons',
                 )),
+            'image-format'=>array('label'=>'Image Format', 'type'=>'toggle', 'default'=>'cropped', 'toggles'=>array(
+                'cropped' => 'Cropped',
+                'padded' => 'Padded',
+                )),
             ),
         );
 /*
