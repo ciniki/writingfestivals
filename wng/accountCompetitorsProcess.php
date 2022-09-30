@@ -729,9 +729,9 @@ function ciniki_writingfestivals_wng_accountCompetitorsProcess(&$ciniki, $tnid, 
                     'url' => "/account/writingfestivalcompetitors?add=yes",
                     )),
                 );
-//            if( isset($customer_switch_type_block) ) {
-//                $blocks[] = $customer_switch_type_block;
-//            }
+            if( isset($customer_switch_type_block) ) {
+                $blocks[] = $customer_switch_type_block;
+            }
         }
     }
 

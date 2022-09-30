@@ -18,7 +18,7 @@ function ciniki_writingfestivals_wng_accountCustomerTypeProcess(&$ciniki, $tnid,
     //
 
 
-    return array('stat'=>'ok', 'customer_type'=>10);
+//    return array('stat'=>'ok', 'customer_type'=>10);
 
 
 
@@ -118,10 +118,10 @@ function ciniki_writingfestivals_wng_accountCustomerTypeProcess(&$ciniki, $tnid,
                         'text' => 'I am a Parent registering my Children',
                         'url' => "{$args['base_url']}?ctype=10" . $additional_args,
                         ),
-                    array(
-                        'text' => 'I am a Teacher registering my Students',
-                        'url' => "{$args['base_url']}?ctype=20" . $additional_args,
-                        ),
+//                    array(
+//                        'text' => 'I am a Teacher registering my Students',
+//                        'url' => "{$args['base_url']}?ctype=20" . $additional_args,
+//                        ),
                     array(
                         'text' => 'I am an Adult registering Myself',
                         'url' => "{$args['base_url']}?ctype=30" . $additional_args,

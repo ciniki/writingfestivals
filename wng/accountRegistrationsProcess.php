@@ -817,7 +817,7 @@ function ciniki_writingfestivals_wng_accountRegistrationsProcess(&$ciniki, $tnid
         }
         if( ($festival['flags']&0x01) == 0x01 && ($festival['live'] == 'yes' || $festival['virtual'] == 'yes') ) {
             if( count($cart_registrations) > 0 ) {
-                $add_button = "<a class='button' href='/account/writingfestivalregistrations?add=yes'>Add</a>";
+                $add_button = "<a class='button' href='{$request['ssl_domain_base_url']}/account/writingfestivalregistrations?add=yes'>Add</a>";
                 $total = 0;
                 foreach($cart_registrations as $rid => $registration) {
                     $cart_registrations[$rid]['editbutton'] = "<form action='{$base_url}' method='POST'>"
@@ -861,7 +861,7 @@ function ciniki_writingfestivals_wng_accountRegistrationsProcess(&$ciniki, $tnid
                 'class' => 'limit-width limit-width-60 aligncenter',
                 'list' => array(array(
                     'text' => 'Add Registration',
-                    'url' => "/account/writingfestivalregistrations?add=yes",
+                    'url' => "{$request['ssl_domain_base_url']}/account/writingfestivalregistrations?add=yes",
                     )),
                 );
             if( count($cart_registrations) > 0 ) {
@@ -956,11 +956,11 @@ function ciniki_writingfestivals_wng_accountRegistrationsProcess(&$ciniki, $tnid
             //
         }
 
-//        if( ($festival['flags']&0x01) == 0x01 && ($festival['live'] == 'yes' || $festival['virtual'] == 'yes') 
-//            && isset($customer_switch_type_block)
-//            ) {
-//            $blocks[] = $customer_switch_type_block;
-//        }
+        if( ($festival['flags']&0x01) == 0x01 && ($festival['live'] == 'yes' || $festival['virtual'] == 'yes') 
+            && isset($customer_switch_type_block)
+            ) {
+            $blocks[] = $customer_switch_type_block;
+        }
     }
 
     return array('stat'=>'ok', 'blocks'=>$blocks);

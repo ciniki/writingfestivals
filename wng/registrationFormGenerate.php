@@ -456,7 +456,7 @@ function ciniki_writingfestivals_wng_registrationFormGenerate(&$ciniki, $tnid, &
             . "if(t==-1){"
                 . "C.gE('f-action').value='addcompetitor';"
                 . "var f=C.gE('addregform');"
-                . "f.action='/account/writingfestivalcompetitors?add=yes';"
+                . "f.action='{$request['ssl_domain_base_url']}/account/writingfestivalcompetitors?add=yes';"
                 . "f.submit();"
             . "}"
         . "};"
