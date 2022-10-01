@@ -826,7 +826,6 @@ function ciniki_writingfestivals_festivalGet($ciniki) {
                 return $rc;
             }
             $festival['winners'] = isset($rc['winners']) ? $rc['winners'] : array();
-            error_log(print_r($festival,true));
         }
 
         if( isset($args['sponsors']) && $args['sponsors'] == 'yes' 

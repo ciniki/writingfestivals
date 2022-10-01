@@ -498,7 +498,6 @@ function ciniki_writingfestivals_wng_accountRegistrationsProcess(&$ciniki, $tnid
                 $registration['rtype'] = 30;
             }
             // Virtual pricing
-            error_log($registration['fee']);
             if( $festival['earlybird'] == 'yes' && $festival['earlybird_fee'] > 0 ) {
                 $new_fee = $selected_class['earlybird_fee'];
             } else {
