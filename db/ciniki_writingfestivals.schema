@@ -26,11 +26,15 @@
 #                           0x01 - Online Registrations Open
 #                           0x02 - Online comments
 #                           0x04 - Virtual Pricing (**future**) [copied from musicfestivals to keep in sync]
-#                           0x08 - 
+#                           0x08 - Section End Dates
+#                           0x10 - 
+#                           0x20 - 
+#                           0x40 - 
+#                           0x80 - 
 #
 # earlybird_date:       The last day for earlybird pricing.
 # live_date:            The last day for live pricing.
-# virtual_date:       The last day for virtual pricing.
+# virtual_date:         The last day for virtual pricing.
 # 
 # primary_image_id:     The ID of the image to show in listings and top of festival page. (optional)
 #

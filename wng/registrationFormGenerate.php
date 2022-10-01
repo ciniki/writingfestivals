@@ -68,6 +68,8 @@ function ciniki_writingfestivals_wng_registrationFormGenerate(&$ciniki, $tnid, &
     //
     $strsql = "SELECT s.id AS section_id, "
         . "s.name AS section_name, "
+        . "s.live_end_dt AS live_end_dt, "
+        . "s.virtual_end_dt AS virtual_end_dt, "
         . "ca.name AS category_name, "
         . "cl.id AS class_id, "
         . "cl.uuid AS class_uuid, "
@@ -95,7 +97,7 @@ function ciniki_writingfestivals_wng_registrationFormGenerate(&$ciniki, $tnid, &
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryIDTree');
     $rc = ciniki_core_dbHashQueryIDTree($ciniki, $strsql, 'ciniki.writingfestivals', array(
         array('container'=>'sections', 'fname'=>'section_id', 
-            'fields'=>array('id'=>'section_id', 'name'=>'section_name'),
+            'fields'=>array('id'=>'section_id', 'name'=>'section_name', 'live_end_dt', 'virtual_end_dt'),
             ),
         array('container'=>'classes', 'fname'=>'class_id', 
             'fields'=>array('id'=>'class_id', 'uuid'=>'class_uuid', 'category_name', 'code'=>'class_code', 
@@ -107,6 +109,7 @@ function ciniki_writingfestivals_wng_registrationFormGenerate(&$ciniki, $tnid, &
     }
     $sections = isset($rc['sections']) ? $rc['sections'] : array();
 
+    $dt = new DateTime('now', new DateTimezone('UTC'));
 
     //
     // Build the list of classes and find selected class
@@ -118,6 +121,22 @@ function ciniki_writingfestivals_wng_registrationFormGenerate(&$ciniki, $tnid, &
     $live_prices = array();
     $virtual_prices = array();
     foreach($sections as $sid => $section) {
+        $section_live = 'yes';
+        $section_virtual = 'yes';
+        if( ($festival['flags']&0x08) == 0x08 ) {
+            if( $section['live_end_dt'] != '0000-00-00 00:00:00' ) {
+                $section_live_dt = new DateTime($section['live_end_dt'], new DateTimezone('UTC'));
+                if( $section_live_dt < $dt ) {
+                    $section_live = 'no';
+                }
+            }
+            if( $section['virtual_end_dt'] != '0000-00-00 00:00:00' ) {
+                $section_virtual_dt = new DateTime($section['virtual_end_dt'], new DateTimezone('UTC'));
+                if( $section_virtual_dt < $dt ) {
+                    $section_virtual = 'no';
+                }
+            }
+        }
         if( isset($section['classes']) ) {
             foreach($section['classes'] as $cid => $section_class) {
                 if( ($section_class['flags']&0x10) == 0x10 ) {
@@ -143,14 +162,14 @@ function ciniki_writingfestivals_wng_registrationFormGenerate(&$ciniki, $tnid, &
                 // Virtual option(0x02) and virtual pricing(0x04) set for festival
                 //
                 if( ($festival['flags']&0x06) == 0x06 ) {
-                    if( $festival['earlybird'] == 'yes' && $section_class['earlybird_fee'] > 0 ) {
+                    if( $festival['earlybird'] == 'yes' && $section_live == 'yes' && $section_class['earlybird_fee'] > 0 ) {
                         $live_prices[$cid] = '$' . number_format($section_class['earlybird_fee'], 2);
                         $sections[$sid]['classes'][$cid]['live_fee'] = $section_class['earlybird_fee'];
-                    } elseif( $festival['live'] == 'yes' && $section_class['fee'] > 0 ) {
+                    } elseif( $festival['live'] == 'yes' && $section_live == 'yes' && $section_class['fee'] > 0 ) {
                         $live_prices[$cid] = '$' . number_format($section_class['fee'], 2);
                         $sections[$sid]['classes'][$cid]['live_fee'] = $section_class['fee'];
                     }
-                    if( $festival['virtual'] == 'yes' && $section_class['vfee'] > 0 ) {
+                    if( $festival['virtual'] == 'yes' && $section_virtual == 'yes' && $section_class['vfee'] > 0 ) {
                         $virtual_prices[$cid] = '$' . number_format($section_class['vfee'], 2);
                         $sections[$sid]['classes'][$cid]['virtual_fee'] = $section_class['vfee'];
                     }
@@ -183,6 +202,17 @@ function ciniki_writingfestivals_wng_registrationFormGenerate(&$ciniki, $tnid, &
                         ) {
                         unset($sections[$sid]['classes'][$cid]);
                     } */
+                    if( ($festival['flags']&0x08) == 0x08 && $section_live == 'no' && $section_virtual == 'no' ) {
+                        unset($sections[$sid]['classes'][$cid]);
+                    }
+                }
+                //
+                // Section end dates and no virtual option or pricing
+                //
+                elseif( ($festival['flags']&0x08) == 0x08 ) {
+                    if( $section_live == 'no' ) {
+                        unset($sections[$sid]['classes'][$cid]);
+                    }
                 }
             }
         }

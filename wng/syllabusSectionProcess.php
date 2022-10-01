@@ -103,7 +103,9 @@ function ciniki_writingfestivals_wng_syllabusSectionProcess(&$ciniki, $tnid, &$r
         . "sections.name, "
         . "sections.primary_image_id, "
         . "sections.synopsis, "
-        . "sections.description "
+        . "sections.description, "
+        . "sections.live_end_dt, "
+        . "sections.virtual_end_dt "
         . "FROM ciniki_writingfestival_sections AS sections "
         . "WHERE sections.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND sections.festival_id = '" . ciniki_core_dbQuote($ciniki, $s['festival-id']) . "' "
@@ -118,6 +120,24 @@ function ciniki_writingfestivals_wng_syllabusSectionProcess(&$ciniki, $tnid, &$r
         return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.218', 'msg'=>'Unable to find requested section'));
     }
     $section = $rc['section'];
+
+    //
+    // Check for section end dates
+    //
+    if( ($festival['flags']&0x08) == 0x08 ) {
+        if( $section['live_end_dt'] != '0000-00-00 00:00:00' ) {
+            $section_live_dt = new DateTime($section['live_end_dt'], new DateTimezone('UTC'));
+            if( $section_live_dt < $dt ) {
+                $festival['live'] = 'no';
+            }
+        }
+        if( $section['virtual_end_dt'] != '0000-00-00 00:00:00' ) {
+            $section_virtual_dt = new DateTime($section['virtual_end_dt'], new DateTimezone('UTC'));
+            if( $section_virtual_dt < $dt ) {
+                $festival['virtual'] = 'no';
+            }
+        }
+    }
   
     if( isset($section['description']) && $section['description'] != '' ) {
         $blocks[] = array(

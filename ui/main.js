@@ -629,6 +629,7 @@ function ciniki_writingfestivals_main() {
                 'on_fields':['flags3','virtual_date'],
                 },
             'flags3':{'label':'Virtual Pricing', 'type':'flagtoggle', 'default':'off', 'bit':0x04, 'field':'flags', 'visible':'no'},
+            'flags4':{'label':'Section End Dates', 'type':'flagtoggle', 'default':'off', 'bit':0x08, 'field':'flags', 'visible':'yes'},
             //'earlybird_date':{'label':'Earlybird End', 'type':'date'},
             'earlybird_date':{'label':'Earlybird Deadline', 'type':'datetime'},
             'live_date':{'label':'Live Deadline', 'type':'datetime'},
@@ -823,6 +824,12 @@ function ciniki_writingfestivals_main() {
         'general':{'label':'Section', 'aside':'yes', 'fields':{
             'name':{'label':'Name', 'type':'text', 'required':'yes'},
             'sequence':{'label':'Order', 'type':'text', 'required':'yes', 'size':'small'},
+            'live_end_dt':{'label':'Live End Date', 'type':'datetime',
+                'visible':function() {return (M.ciniki_writingfestivals_main.festival.data.flags&0x08) == 0x08 ? 'yes' : 'no';},
+                },
+            'virtual_end_dt':{'label':'Virtual End Date', 'type':'datetime',
+                'visible':function() {return (M.ciniki_writingfestivals_main.festival.data.flags&0x0a) == 0x0a ? 'yes' : 'no';},
+                },
             }},
         '_tabs':{'label':'', 'type':'paneltabs', 'selected':'categories', 'tabs':{
             'categories':{'label':'Categories', 'fn':'M.ciniki_writingfestivals_main.section.switchTab(\'categories\');'},

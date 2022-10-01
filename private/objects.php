@@ -78,6 +78,8 @@ function ciniki_writingfestivals_objects($ciniki) {
             'primary_image_id'=>array('name'=>'Image', 'ref'=>'ciniki.images.image', 'default'=>'0'),
             'synopsis'=>array('name'=>'Synopsis', 'default'=>''),
             'description'=>array('name'=>'Description', 'default'=>''),
+            'live_end_dt'=>array('name'=>'Live End Date', 'default'=>''),
+            'virtual_end_dt'=>array('name'=>'Virtual End Date', 'default'=>''),
             ),
         'history_table'=>'ciniki_writingfestival_history',
         );

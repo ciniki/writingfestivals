@@ -1,0 +1,6 @@
+#
+# Added end dates for section
+#
+ALTER TABLE ciniki_writingfestival_sections ADD COLUMN live_end_dt datetime not null AFTER description;
+ALTER TABLE ciniki_writingfestival_sections ADD COLUMN virtual_end_dt datetime not null AFTER live_end_dt;
+ALTER TABLE ciniki_writingfestival_sections COMMENT='v1.03';
