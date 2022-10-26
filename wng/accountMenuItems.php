@@ -40,14 +40,14 @@ function ciniki_writingfestivals_wng_accountMenuItems($ciniki, $tnid, $request, 
     $items[] = array(
         'title' => 'Registrations', 
         'priority' => 739, 
-        'selected' => 'no',
+        'selected' => isset($args['selected']) && $args['selected'] == 'writingfestivalregistrations' ? 'yes' : 'no',
         'ref' => 'ciniki.writingfestivals.registrations',
         'url' => $base_url . '/writingfestivalregistrations',
         );
     $items[] = array(
         'title' => 'Competitors', 
         'priority' => 738, 
-        'selected' => 'no',
+        'selected' => isset($args['selected']) && $args['selected'] == 'writingfestivalcompetitors' ? 'yes' : 'no',
         'ref' => 'ciniki.writingfestivals.competitors',
         'url' => $base_url . '/writingfestivalcompetitors',
         );
