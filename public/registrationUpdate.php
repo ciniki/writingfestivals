@@ -128,32 +128,34 @@ function ciniki_writingfestivals_registrationUpdate(&$ciniki) {
         if( $rc['stat'] != 'ok' ) {
             return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.410', 'msg'=>'Unable to get invoice item', 'err'=>$rc['err']));
         }
-        $item = $rc['item'];
+        if( isset($rc['item']) ) {
+            $item = $rc['item'];
 
-        //
-        // Check if anything changed in the cart
-        //
-        $update_item_args = array();
-        $notes = $registration['display_name'] . ($registration['title'] != '' ? ' - ' . $registration['title'] : '');
+            //
+            // Check if anything changed in the cart
+            //
+            $update_item_args = array();
+            $notes = $registration['display_name'] . ($registration['title'] != '' ? ' - ' . $registration['title'] : '');
 
-        if( $item['code'] != $registration['class_code'] ) {
-            $update_item_args['code'] = $registration['class_code'];
-        }
-        if( $item['description'] != $registration['class_name'] ) {
-            $update_item_args['description'] = $registration['class_name'];
-        }
-        if( $item['unit_amount'] != $registration['fee'] ) {
-            $update_item_args['unit_amount'] = $registration['fee'];
-        }
-        if( $item['notes'] != $notes ) {
-            $update_item_args['notes'] = $notes;
-        }
-        if( count($update_item_args) > 0 ) {
-            $update_item_args['item_id'] = $item['id'];
-            ciniki_core_loadMethod($ciniki, 'ciniki', 'sapos', 'hooks', 'invoiceItemUpdate');
-            $rc = ciniki_sapos_hooks_invoiceItemUpdate($ciniki, $args['tnid'], $update_item_args);
-            if( $rc['stat'] != 'ok' ) {
-                return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.313', 'msg'=>'Unable to update invoice', 'err'=>$rc['err']));
+            if( $item['code'] != $registration['class_code'] ) {
+                $update_item_args['code'] = $registration['class_code'];
+            }
+            if( $item['description'] != $registration['class_name'] ) {
+                $update_item_args['description'] = $registration['class_name'];
+            }
+            if( $item['unit_amount'] != $registration['fee'] ) {
+                $update_item_args['unit_amount'] = $registration['fee'];
+            }
+            if( $item['notes'] != $notes ) {
+                $update_item_args['notes'] = $notes;
+            }
+            if( count($update_item_args) > 0 ) {
+                $update_item_args['item_id'] = $item['id'];
+                ciniki_core_loadMethod($ciniki, 'ciniki', 'sapos', 'hooks', 'invoiceItemUpdate');
+                $rc = ciniki_sapos_hooks_invoiceItemUpdate($ciniki, $args['tnid'], $update_item_args);
+                if( $rc['stat'] != 'ok' ) {
+                    return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.313', 'msg'=>'Unable to update invoice', 'err'=>$rc['err']));
+                }
             }
         }
     }
