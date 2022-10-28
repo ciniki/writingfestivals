@@ -1317,11 +1317,11 @@ function ciniki_writingfestivals_main() {
 //            'earlybird_fee':{'label':'Earlybird Fee', 'type':'text', 'size':'small'},
             'fee':{'label':'Fee', 'type':'text', 'size':'small'},
             'pdf_filename':{'label':'PDF', 'type':'text', 'editable':'no',
-                'visible':function() { return (M.ciniki_writingfestivals_main.registration.data.festival.flags&0x02) == 0x02 ? 'yes' : 'no'},
+//                'visible':function() { return (M.ciniki_writingfestivals_main.registration.data.festival.flags&0x02) == 0x02 ? 'yes' : 'no'},
                 },
             }},
         'pdf_buttons':{'label':'', 
-            'visible':function() { return (M.ciniki_writingfestivals_main.registration.data.festival.flags&0x02) == 0x02 ? 'yes' : 'no'},
+//            'visible':function() { return (M.ciniki_writingfestivals_main.registration.data.festival.flags&0x02) == 0x02 ? 'yes' : 'no'},
             'buttons':{
                 'add':{'label':'Upload Writing PDF', 'fn':'M.ciniki_writingfestivals_main.registration.uploadPDF();',
                     'visible':function() { return M.ciniki_writingfestivals_main.registration.data.pdf_filename == '' ? 'yes' : 'no'},
