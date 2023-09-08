@@ -307,6 +307,7 @@ function ciniki_writingfestivals_wng_accountCompetitorsProcess(&$ciniki, $tnid, 
             'value' => (isset($_POST['f-notes']) ? trim($_POST['f-notes']) : (isset($competitor['notes']) ? $competitor['notes'] :'')),
             ),
         );
+            error_log(print_r($festival,true));
     if( isset($festival['waiver-msg']) && $festival['waiver-msg'] != '' ) {
         $fields['termstitle'] = array(
             'id' => "termstitle",
@@ -314,7 +315,7 @@ function ciniki_writingfestivals_wng_accountCompetitorsProcess(&$ciniki, $tnid, 
             'ftype' => 'content',
             'required' => 'yes',
             'size' => 'large',
-            'class' => 'hidden',
+//            'class' => 'hidden',
             'value' => '',
             );
         $fields['terms'] = array(
@@ -322,7 +323,7 @@ function ciniki_writingfestivals_wng_accountCompetitorsProcess(&$ciniki, $tnid, 
             'label' => $festival['waiver-msg'],
             'ftype' => 'checkbox',
             'size' => 'large',
-            'class' => 'hidden',
+//            'class' => 'hidden',
             'value' => (isset($competitor['flags']) && ($competitor['flags']&0x01) == 0x01 ? 'on' : ''),
             );
         if( isset($_POST['f-action']) && $_POST['f-action'] == 'update' ) {
