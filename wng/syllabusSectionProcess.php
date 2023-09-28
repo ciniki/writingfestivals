@@ -117,7 +117,11 @@ function ciniki_writingfestivals_wng_syllabusSectionProcess(&$ciniki, $tnid, &$r
         return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.217', 'msg'=>'Unable to load section', 'err'=>$rc['err']));
     }
     if( !isset($rc['section']) ) {
-        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.218', 'msg'=>'Unable to find requested section'));
+        return array('stat'=>'ok', 'blocks'=> array(array(
+            'type' => 'msg',
+            'level' => 'error',
+            'content' => 'Unable to find requested section',
+            )));
     }
     $section = $rc['section'];
 
