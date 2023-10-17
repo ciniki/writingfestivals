@@ -307,7 +307,6 @@ function ciniki_writingfestivals_wng_accountCompetitorsProcess(&$ciniki, $tnid, 
             'value' => (isset($_POST['f-notes']) ? trim($_POST['f-notes']) : (isset($competitor['notes']) ? $competitor['notes'] :'')),
             ),
         );
-            error_log(print_r($festival,true));
     if( isset($festival['waiver-msg']) && $festival['waiver-msg'] != '' ) {
         $fields['termstitle'] = array(
             'id' => "termstitle",
