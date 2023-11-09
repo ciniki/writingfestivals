@@ -217,8 +217,6 @@ function ciniki_writingfestivals_wng_accountAdjudicationsProcess(&$ciniki, $tnid
 //            && $request['uri_split'][($request['cur_uri_pos']+5)] == $timeslot['registrations'][$request['uri_split'][($request['cur_uri_pos']+4)]]['pdf_filename']
             ) {
             $registration = $timeslot['registrations'][$request['uri_split'][($request['cur_uri_pos']+4)]];
-error_log("TEST");
-            error_log(print_r($registration,true));
             //
             // Get the tenant storage directory
             //
@@ -296,10 +294,11 @@ error_log("TEST");
 
     if( $display == 'timeslot' ) {
         $sections = array();
+        $registration_num = 1;
         foreach($timeslot['registrations'] as $registration) {
             $section = array(    
                 'id' => 'section-' . $registration['id'],
-                'label' => $registration['name'] . ' - ' . $registration['class_name'],
+                'label' => "Entry #" . $registration_num,
                 'fields' => array(),
                 );
             $num_titles = 1;
@@ -371,6 +370,7 @@ error_log("TEST");
                     ); */
             }
             $sections[$registration['id']] = $section;
+            $registration_num++;
         }
         $sections['submit'] = array(
             'id' => 'submit',
