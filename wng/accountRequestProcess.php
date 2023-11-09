@@ -26,6 +26,9 @@ function ciniki_writingfestivals_wng_accountRequestProcess(&$ciniki, $tnid, &$re
     } elseif( $item['ref'] == 'ciniki.writingfestivals.competitors' ) {
         ciniki_core_loadMethod($ciniki, 'ciniki', 'writingfestivals', 'wng', 'accountCompetitorsProcess');
         return ciniki_writingfestivals_wng_accountCompetitorsProcess($ciniki, $tnid, $request, $item);
+    } elseif( $item['ref'] == 'ciniki.writingfestivals.adjudications' ) {
+        ciniki_core_loadMethod($ciniki, 'ciniki', 'writingfestivals', 'wng', 'accountAdjudicationsProcess');
+        return ciniki_writingfestivals_wng_accountAdjudicationsProcess($ciniki, $tnid, $request, $item);
     }
     
 

@@ -447,16 +447,16 @@ function ciniki_writingfestivals_templates_commentsPDF(&$ciniki, $tnid, $args) {
                             $pdf->Cell(45, 12, "Adjudicator's Signature ", 0, false, 'L', 0, '', 0, false);
                             $pdf->Cell(85, 12, "", 'B', false, 'L', 0, '', 0, false);
                         }
-                        $pdf->Cell(30, 12, "Level ", 0, false, 'R', 0, '', 0, false);
-                        $pdf->Cell(20, 12, $comment['grade'], 'B', false, 'L', 0, '', 0, false);
+                        $pdf->Cell(30, 12, "Mark ", 0, false, 'R', 0, '', 0, false);
+                        $pdf->Cell(20, 12, $comment['score'], 'B', false, 'L', 0, '', 0, false);
                         $pdf->Ln(14);
                         
                         $pdf->SetTextColor(128);
                         $pdf->SetFont('helvetica', 'I', 10);
-                        $pdf->Cell(180, 10, "Levels are as follows:", 0, false, 'L', 0, '', 0, false);
+//                        $pdf->Cell(180, 10, "Levels are as follows:", 0, false, 'L', 0, '', 0, false);
                         $pdf->Ln(6);
                         $pdf->SetFont('helvetica', 'BI', 10);
-                        $pdf->Cell(180, 10, "G = Gold (85 and above)  S = Silver (80-84)  B = Bronze (79 and under)", 0, false, 'L', 0, '', 0, false);
+//                        $pdf->Cell(180, 10, "G = Gold (85 and above)  S = Silver (80-84)  B = Bronze (79 and under)", 0, false, 'L', 0, '', 0, false);
                         $pdf->SetTextColor(0);
                     }
                 }

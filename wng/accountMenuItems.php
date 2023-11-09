@@ -37,6 +37,30 @@ function ciniki_writingfestivals_wng_accountMenuItems($ciniki, $tnid, $request, 
     }
     $festival = $rc['festival'];
 
+    //
+    // Check if the customer is an adjudicator
+    //
+    $adjudicator = 'no';
+    $strsql = "SELECT id "
+        . "FROM ciniki_writingfestival_adjudicators "
+        . "WHERE customer_id = '" . ciniki_core_dbQuote($ciniki, $request['session']['customer']['id']) . "' "
+        . "AND festival_id = '" . ciniki_core_dbQuote($ciniki, $festival['id']) . "' "
+        . "AND tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
+        . "";
+    $rc = ciniki_core_dbHashQuery($ciniki, $strsql, 'ciniki.writingfestivals', 'adjudicator');
+    if( $rc['stat'] != 'ok' ) {
+        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.393', 'msg'=>'Unable to load adjudicator', 'err'=>$rc['err']));
+    }
+    if( isset($rc['adjudicator']) ) {
+        $items[] = array(
+            'title' => 'Adjudications', 
+            'priority' => 750, 
+            'selected' => isset($args['selected']) && $args['selected'] == 'writingfestivaladjudications' ? 'yes' : 'no',
+            'ref' => 'ciniki.writingfestivals.adjudications',
+            'url' => $base_url . '/writingfestivaladjudications',
+            );
+    }
+
     $items[] = array(
         'title' => 'Registrations', 
         'priority' => 739, 
