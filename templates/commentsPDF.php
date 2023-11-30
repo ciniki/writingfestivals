@@ -447,8 +447,8 @@ function ciniki_writingfestivals_templates_commentsPDF(&$ciniki, $tnid, $args) {
                             $pdf->Cell(45, 12, "Adjudicator's Signature ", 0, false, 'L', 0, '', 0, false);
                             $pdf->Cell(85, 12, "", 'B', false, 'L', 0, '', 0, false);
                         }
-                        $pdf->Cell(30, 12, "Mark ", 0, false, 'R', 0, '', 0, false);
-                        $pdf->Cell(20, 12, $comment['score'], 'B', false, 'L', 0, '', 0, false);
+//                        $pdf->Cell(30, 12, "Mark ", 0, false, 'R', 0, '', 0, false);
+//                        $pdf->Cell(20, 12, $comment['score'], 'B', false, 'L', 0, '', 0, false);
                         $pdf->Ln(14);
                         
                         $pdf->SetTextColor(128);
