@@ -67,6 +67,7 @@ function ciniki_writingfestivals_wng_syllabusProcess(&$ciniki, $tnid, &$request,
         . "WHERE sections.tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
         . "AND sections.festival_id = '" . ciniki_core_dbQuote($ciniki, $s['festival-id']) . "' "
         . "AND (sections.flags&0x01) = 0 "
+        . "AND sections.name <> 'Duplicate entries' "
         . "ORDER BY sections.sequence, sections.name "
         . "";
     ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbHashQueryArrayTree');
