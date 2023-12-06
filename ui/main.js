@@ -76,7 +76,7 @@ function ciniki_writingfestivals_main() {
             'registrations':{'label':'Registrations', 'fn':'M.ciniki_writingfestivals_main.festival.switchTab(\'registrations\');'},
             'schedule':{'label':'Schedule', 'fn':'M.ciniki_writingfestivals_main.festival.switchTab(\'schedule\');'},
             'comments':{'label':'Comments', 'fn':'M.ciniki_writingfestivals_main.festival.switchTab(\'comments\');',
-                'visible':function() { return (M.ciniki_writingfestivals_main.festival.data.flags&0x02) == 0x02 ? 'yes' : 'no'},
+//                'visible':function() { return (M.ciniki_writingfestivals_main.festival.data.flags&0x02) == 0x02 ? 'yes' : 'no'},
                 },
             'competitors':{'label':'Competitors', 'fn':'M.ciniki_writingfestivals_main.festival.switchTab(\'competitors\');'},
             'adjudicators':{'label':'Adjudicators', 'fn':'M.ciniki_writingfestivals_main.festival.switchTab(\'adjudicators\');'},
