@@ -282,6 +282,7 @@ function ciniki_writingfestivals_hooks_uiCustomersData($ciniki, $tnid, $args) {
         $rsp['tabs'][] = array(
             'id' => 'ciniki.writingfestivals.festivals',
             'label' => 'Writing',
+            'priority' => 3000,
             'sections' => $sections,
             );
         $sections = array();
