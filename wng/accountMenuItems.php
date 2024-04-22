@@ -54,7 +54,7 @@ function ciniki_writingfestivals_wng_accountMenuItems($ciniki, $tnid, $request, 
     if( isset($rc['adjudicator']) ) {
         $items[] = array(
             'title' => 'Adjudications', 
-            'priority' => 750, 
+            'priority' => 3750, 
             'selected' => isset($args['selected']) && $args['selected'] == 'writingfestivaladjudications' ? 'yes' : 'no',
             'ref' => 'ciniki.writingfestivals.adjudications',
             'url' => $base_url . '/writingfestivaladjudications',
@@ -63,14 +63,14 @@ function ciniki_writingfestivals_wng_accountMenuItems($ciniki, $tnid, $request, 
 
     $items[] = array(
         'title' => 'Registrations', 
-        'priority' => 739, 
+        'priority' => 3749, 
         'selected' => isset($args['selected']) && $args['selected'] == 'writingfestivalregistrations' ? 'yes' : 'no',
         'ref' => 'ciniki.writingfestivals.registrations',
         'url' => $base_url . '/writingfestivalregistrations',
         );
     $items[] = array(
         'title' => 'Competitors', 
-        'priority' => 738, 
+        'priority' => 3738, 
         'selected' => isset($args['selected']) && $args['selected'] == 'writingfestivalcompetitors' ? 'yes' : 'no',
         'ref' => 'ciniki.writingfestivals.competitors',
         'url' => $base_url . '/writingfestivalcompetitors',
