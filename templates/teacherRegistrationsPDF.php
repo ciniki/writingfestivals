@@ -52,8 +52,6 @@ function ciniki_writingfestivals_templates_teacherRegistrationsPDF(&$ciniki, $tn
         return $rc;
     }
     $intl_timezone = $rc['settings']['intl-default-timezone'];
-    $intl_currency_fmt = numfmt_create($rc['settings']['intl-default-locale'], NumberFormatter::CURRENCY);
-    $intl_currency = $rc['settings']['intl-default-currency'];
 
     //
     // Check if the registrations are passed in args

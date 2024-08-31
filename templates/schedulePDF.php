@@ -36,8 +36,6 @@ function ciniki_writingfestivals_templates_schedulePDF(&$ciniki, $tnid, $args) {
         return $rc;
     }
     $intl_timezone = $rc['settings']['intl-default-timezone'];
-    $intl_currency_fmt = numfmt_create($rc['settings']['intl-default-locale'], NumberFormatter::CURRENCY);
-    $intl_currency = $rc['settings']['intl-default-currency'];
 
     //
     // Load the festival

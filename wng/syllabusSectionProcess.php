@@ -199,11 +199,20 @@ function ciniki_writingfestivals_wng_syllabusSectionProcess(&$ciniki, $tnid, &$r
     if( isset($rc['categories']) ) {
         $categories = $rc['categories'];
         foreach($categories as $category) {
-            $blocks[] = array(
-                'type' => 'text', 
-                'title' => $category['name'], 
-                'content' => ($category['description'] != '' ? $category['description'] : ($category['synopsis'] != '' ? $category['synopsis'] : ' ')),
-                );
+            $intro = ($category['description'] != '' ? $category['description'] : ($category['synopsis'] != '' ? $category['synopsis'] : ''));
+            if( $intro == '' ) {
+                $blocks[] = array(
+                    'type' => 'title', 
+                    'level' => 2,
+                    'title' => $category['name'], 
+                    );
+            } else {
+                $blocks[] = array(
+                    'type' => 'text', 
+                    'title' => $category['name'], 
+                    'content' => $intro,
+                    );
+            }
             if( isset($category['classes']) && count($category['classes']) > 0 ) {
                 //
                 // Process the classes to determine which fee to show
