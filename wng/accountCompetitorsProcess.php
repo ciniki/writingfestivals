@@ -278,7 +278,7 @@ function ciniki_writingfestivals_wng_accountCompetitorsProcess(&$ciniki, $tnid, 
             ),
         'age' => array(
             'id' => 'age',
-            'label' => 'Age' . (isset($festival['age-restriction-msg']) ? ' ' . $festival['age-restriction-msg'] : ''),
+            'label' => (isset($festival['age-restriction-msg']) ? ' ' . $festival['age-restriction-msg'] : 'Age'),
             'ftype' => 'text',
             'required' => 'yes',
             'size' => 'small',

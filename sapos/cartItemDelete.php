@@ -24,7 +24,7 @@ function ciniki_writingfestivals_sapos_cartItemDelete($ciniki, $tnid, $invoice_i
         //
         // Get the current details for the registration
         //
-        $strsql = "SELECT status "
+        $strsql = "SELECT id, uuid, status "
             . "FROM ciniki_writingfestival_registrations "
             . "WHERE id = '" . ciniki_core_dbQuote($ciniki, $args['object_id']) . "' "
             . "AND tnid = '" . ciniki_core_dbQuote($ciniki, $tnid) . "' "
@@ -43,12 +43,12 @@ function ciniki_writingfestivals_sapos_cartItemDelete($ciniki, $tnid, $invoice_i
         }
 
         //
-        // Change the status back to Draft
+        // Delete the registration
         //
-        ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectUpdate');
-        $rc = ciniki_core_objectUpdate($ciniki, $tnid, 'ciniki.writingfestivals.registration', $args['object_id'], array('status'=>5));
+        ciniki_core_loadMethod($ciniki, 'ciniki', 'writingfestivals', 'private', 'registrationDelete');
+        $rc = ciniki_writingfestivals_registrationDelete($ciniki, $tnid, $item['id']);
         if( $rc['stat'] != 'ok' ) {
-            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.138', 'msg'=>'Error trying to remove registration.', 'err'=>$rc['err']));
+            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.239', 'msg'=>'Error trying to remove registration.', 'err'=>$rc['err']));
         }
 
         return array('stat'=>'ok');

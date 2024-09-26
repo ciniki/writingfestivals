@@ -223,7 +223,6 @@ function ciniki_writingfestivals_templates_teacherRegistrationsPDF(&$ciniki, $tn
             //
             $img_width = 0;
             if( $this->header_image != null ) {
-                error_log('image');
                 $height = $this->header_image->getImageHeight();
                 $width = $this->header_image->getImageWidth();
                 $image_ratio = $width/$height;
@@ -324,7 +323,6 @@ function ciniki_writingfestivals_templates_teacherRegistrationsPDF(&$ciniki, $tn
     // Load the header image
     //
     if( isset($festival['document_logo_id']) && $festival['document_logo_id'] > 0 ) {
-        error_log('logo');
         ciniki_core_loadMethod($ciniki, 'ciniki', 'images', 'private', 'loadImage');
         $rc = ciniki_images_loadImage($ciniki, $tnid, $festival['document_logo_id'], 'original');
         if( $rc['stat'] == 'ok' ) {

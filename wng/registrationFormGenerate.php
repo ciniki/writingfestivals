@@ -381,7 +381,20 @@ function ciniki_writingfestivals_wng_registrationFormGenerate(&$ciniki, $tnid, &
         'label' => 'Word Count',
         'value' => isset($_POST["f-word_count"]) ? $_POST["f-word_count"] : (isset($registration["word_count"]) ? $registration["word_count"] : ''),
         );
-
+    $fields["pdf_filename"] = array(
+        'id' => "pdf_filename",
+        'required' => 'no',
+        'class' => '',
+        'ftype' => 'file',
+        'size' => 'large',
+        'required' => 'yes',
+        'storage_suffix' => "writing",
+        'accept' => 'application/pdf',
+        'label' => 'Entry (PDF)',
+        'error_label' => 'Entry (PDF)',
+        'value' => (isset($registration["pdf_filename"]) ? $registration["pdf_filename"] : ''),
+        );
+/*
     //
     // Check if virtual performance option is available
     //
@@ -422,7 +435,7 @@ function ciniki_writingfestivals_wng_registrationFormGenerate(&$ciniki, $tnid, &
                 }
                 unset($fields['virtual']['options'][1]);
             }
-        }
+        } 
         // 
         // Check if both options still available
         //
@@ -432,7 +445,7 @@ function ciniki_writingfestivals_wng_registrationFormGenerate(&$ciniki, $tnid, &
                 unset($fields['virtual']['options'][0]);
             }
         }
-    }
+    } */
 
     //
     // Setup the Javascript for updating the form as fields change

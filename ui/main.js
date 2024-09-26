@@ -14,10 +14,15 @@ function ciniki_writingfestivals_main() {
 //            'hint':'Search festival',
 //            'noData':'No festival found',
 //            },
-        'festivals':{'label':'Festival', 'type':'simplegrid', 'num_cols':1,
+        'festivals':{'label':'Festival', 'type':'simplegrid', 'num_cols':2,
+            'headerValues':['Festival', 'Status'],
             'noData':'No festival',
-            'addTxt':'Add Festival',
-            'addFn':'M.ciniki_writingfestivals_main.edit.open(\'M.ciniki_writingfestivals_main.menu.open();\',0,null);'
+            'menu':{
+                'add':{
+                    'label':'Add Festival',
+                    'fn':'M.ciniki_writingfestivals_main.edit.open(\'M.ciniki_writingfestivals_main.menu.open();\',0,null);'
+                    },
+                },
             },
     }
     this.menu.liveSearchCb = function(s, i, v) {
@@ -37,6 +42,7 @@ function ciniki_writingfestivals_main() {
         if( s == 'festivals' ) {
             switch(j) {
                 case 0: return d.name;
+                case 1: return d.status_text;
             }
         }
     }
@@ -622,7 +628,7 @@ function ciniki_writingfestivals_main() {
             'name':{'label':'Name', 'type':'text'},
             'start_date':{'label':'Start', 'type':'date'},
             'end_date':{'label':'End', 'type':'date'},
-            'status':{'label':'Status', 'type':'toggle', 'toggles':{'10':'Active', '30':'Published', '60':'Archived'}},
+            'status':{'label':'Status', 'type':'toggle', 'toggles':{'10':'Active', '30':'Current', '60':'Archived'}},
             'flags1':{'label':'Online Registrations', 'type':'flagtoggle', 'default':'off', 'bit':0x01, 'field':'flags'},
             //'flags2':{'label':'Virtual Event', 'type':'flagtoggle', 'default':'off', 'bit':0x02, 'field':'flags'},
             'flags2':{'label':'Virtual Option', 'type':'flagtoggle', 'default':'off', 'bit':0x02, 'field':'flags',

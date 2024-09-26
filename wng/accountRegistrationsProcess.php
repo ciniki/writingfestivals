@@ -221,6 +221,7 @@ function ciniki_writingfestivals_wng_accountRegistrationsProcess(&$ciniki, $tnid
             . "title, "
             . "word_count, "
             . "fee, "
+            . "pdf_filename, "
             . "notes "
             . "FROM ciniki_writingfestival_registrations "
             . "WHERE id = '" . ciniki_core_dbQuote($ciniki, $registration_id) . "' "
@@ -262,6 +263,7 @@ function ciniki_writingfestivals_wng_accountRegistrationsProcess(&$ciniki, $tnid
             . "title, "
             . "word_count, "
             . "fee, "
+            . "pdf_filename, "
             . "notes "
             . "FROM ciniki_writingfestival_registrations "
             . "WHERE uuid = '" . ciniki_core_dbQuote($ciniki, $registration_uuid) . "' "
@@ -288,7 +290,6 @@ function ciniki_writingfestivals_wng_accountRegistrationsProcess(&$ciniki, $tnid
             }
         }
     }
-
 
     //
     // Setup the fields for the form
@@ -334,7 +335,14 @@ function ciniki_writingfestivals_wng_accountRegistrationsProcess(&$ciniki, $tnid
                 ) {
                 continue;
             }
-            if( isset($field['required']) && $field['required'] == 'yes' && $field['value'] == '' && $field['id'] != 'termstitle' ) {
+            if( isset($field['required']) && $field['required'] == 'yes' && $field['ftype'] == 'file' ) {
+                if( $field['value'] == '' && (!isset($_FILES["file-{$field['id']}"]['name']) || $_FILES["file-{$field['id']}"]['name'] == '') ) {
+                    $errors[] = array(
+                        'msg' => 'You must specify the registration ' . (isset($field['error_label']) ? $field['error_label'] : $field['label']) . '.',
+                        );
+                }
+            }
+            elseif( isset($field['required']) && $field['required'] == 'yes' && $field['value'] == '' && $field['id'] != 'termstitle' ) {
                 $errors[] = array(
                     'msg' => 'You must specify the registration ' . $field['label'],
                     );
@@ -416,13 +424,51 @@ function ciniki_writingfestivals_wng_accountRegistrationsProcess(&$ciniki, $tnid
                 $registration['rtype'] = 50;
             }
             // Virtual pricing
-            if( $festival['earlybird'] == 'yes' && $festival['earlybird_fee'] > 0 ) {
+            if( isset($festival['earlybird']) && $festival['earlybird'] == 'yes' 
+                && isset($festival['earlybird_fee']) && $festival['earlybird_fee'] > 0 
+                ) {
                 $registration['fee'] = $selected_class['earlybird_fee'];
             } else {
                 $registration['fee'] = $selected_class['fee'];
             }
-            if( ($festival['flags']&0x04) == 0x04 && $fields['virtual']['value'] == 1 && $selected_class['virtual_fee'] > 0 ) {
-                $registration['fee'] = $selected_class['virtual_fee'];
+//            if( ($festival['flags']&0x04) == 0x04 && $fields['virtual']['value'] == 1 && $selected_class['virtual_fee'] > 0 ) {
+//                $registration['fee'] = $selected_class['virtual_fee'];
+//            }
+
+            //
+            // Get the UUID so it can be used for adding files
+            //
+            ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'dbUUID');
+            $rc = ciniki_core_dbUUID($ciniki, 'ciniki.writingfestivals');
+            if( $rc['stat'] != 'ok' ) {
+                error_log('unable to get uuid');
+                return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.716', 'msg'=>'Unable to get a new UUID', 'err'=>$rc['err']));
+            }
+            $registration['uuid'] = $rc['uuid'];
+
+            //
+            // Check for pdf uploads
+            //
+            foreach(['pdf_filename'] as $fid) {
+                $field = $fields[$fid];
+                if( isset($_POST["f-{$field['id']}"]) && $_POST["f-{$field['id']}"] != '' ) {
+                    if( isset($_FILES["file-{$field['id']}"]["name"]) 
+                        && isset($_FILES["file-{$field['id']}"]["tmp_name"]) 
+                        && file_exists($_FILES["file-{$field['id']}"]['tmp_name'])
+                        ) {
+                        ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'storageFileAdd');
+                        $rc = ciniki_core_storageFileAdd($ciniki, $tnid, 'ciniki.writingfestivals.registration', array(
+                            'uuid' => $registration['uuid'] . '_' . $field['storage_suffix'],
+                            'subdir' => 'files',
+                            'binary_content' => file_get_contents($_FILES["file-{$field['id']}"]['tmp_name']),
+                            ));
+                        if( $rc['stat'] != 'ok' ) {
+                            error_log('unable to store file');
+                            return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.715', 'msg'=>'Unable to store uploaded file', 'err'=>$rc['err']));
+                        }
+                        $registration[$field['id']] = $_FILES["file-{$field['id']}"]['name'];
+                    }
+                }
             }
 
             //
@@ -498,7 +544,9 @@ function ciniki_writingfestivals_wng_accountRegistrationsProcess(&$ciniki, $tnid
                 $registration['rtype'] = 30;
             }
             // Virtual pricing
-            if( $festival['earlybird'] == 'yes' && $festival['earlybird_fee'] > 0 ) {
+            if( isset($festival['earlybird']) && $festival['earlybird'] == 'yes' 
+                && isset($festival['earlybird_fee']) && $festival['earlybird_fee'] > 0 
+                ) {
                 $new_fee = $selected_class['earlybird_fee'];
             } else {
                 $new_fee = $selected_class['fee'];
@@ -520,7 +568,36 @@ function ciniki_writingfestivals_wng_accountRegistrationsProcess(&$ciniki, $tnid
                 if( strncmp($field['id'], 'section', 7) == 0 ) {
                     continue;
                 }
-                if( !isset($registration[$field['id']]) || $field['value'] != $registration[$field['id']] ) {
+                //
+                // Skip fields when editing a pending or paid registration
+                //
+                if( isset($registration['status']) && $registration['status'] > 10 && $field['id'] == 'pdf_filename' ) {
+                    continue;
+                }
+
+                if( $field['ftype'] == 'file' ) {
+                    if( isset($_POST["f-{$field['id']}"]) && $_POST["f-{$field['id']}"] != '' ) {
+                        if( isset($_FILES["file-{$field['id']}"]["name"]) 
+                            && isset($_FILES["file-{$field['id']}"]["tmp_name"]) 
+                            && $_FILES["file-{$field['id']}"]["tmp_name"] != '' 
+                            ) {
+                            ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'storageFileAdd');
+                            $rc = ciniki_core_storageFileAdd($ciniki, $tnid, 'ciniki.writingfestivals.registration', array(
+                                'uuid' => $registration['uuid'] . '_' . $field['storage_suffix'],
+                                'subdir' => 'files',
+                                'binary_content' => file_get_contents($_FILES["file-{$field['id']}"]['tmp_name']),
+                                ));
+                            if( $rc['stat'] != 'ok' ) {
+                                return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.218', 'msg'=>'Unable to store uploaded file', 'err'=>$rc['err']));
+                            }
+                            $update_args[$field['id']] = $_FILES["file-{$field['id']}"]['name'];
+                        }
+                    }
+                }
+                elseif( $field['ftype'] == 'break' ) {
+                    // do nothing
+                }
+                elseif( !isset($registration[$field['id']]) || $field['value'] != $registration[$field['id']] ) {
                     $update_args[$field['id']] = $field['value'];
                 }
             }
@@ -595,7 +672,6 @@ function ciniki_writingfestivals_wng_accountRegistrationsProcess(&$ciniki, $tnid
                 unset($request['session']['account-writingfestivals-registration-return-url']);
                 return array('stat'=>'exit');
             }
-
             header("Location: {$request['ssl_domain_base_url']}/account/writingfestivalregistrations");
             return array('stat'=>'exit');
         }
@@ -628,17 +704,28 @@ function ciniki_writingfestivals_wng_accountRegistrationsProcess(&$ciniki, $tnid
                 if( $rc['stat'] != 'ok' ) {
                     return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.312', 'msg'=>'Unable to get invoice item', 'err'=>$rc['err']));
                 }
-                $item = $rc['item'];
-                
-                //
-                // Remove the cart item
-                //
-                ciniki_core_loadMethod($ciniki, 'ciniki', 'sapos', 'wng', 'cartItemDelete');
-                $rc = ciniki_sapos_wng_cartItemDelete($ciniki, $tnid, $request, array(
-                    'item_id' => $item['id'],
-                    ));
-                if( $rc['stat'] != 'ok' ) {
-                    return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.329', 'msg'=>'Unable to remove registration', 'err'=>$rc['err']));
+                if( isset($rc['item']) ) {
+                    $item = $rc['item'];
+                    
+                    //
+                    // Remove the cart item
+                    //
+                    ciniki_core_loadMethod($ciniki, 'ciniki', 'sapos', 'wng', 'cartItemDelete');
+                    $rc = ciniki_sapos_wng_cartItemDelete($ciniki, $tnid, $request, array(
+                        'item_id' => $item['id'],
+                        ));
+                    if( $rc['stat'] != 'ok' ) {
+                        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.329', 'msg'=>'Unable to remove registration', 'err'=>$rc['err']));
+                    }
+                } else {
+                    //
+                    // Delete the registration
+                    //
+                    ciniki_core_loadMethod($ciniki, 'ciniki', 'writingfestivals', 'private', 'registrationDelete');
+                    $rc = ciniki_writingfestivals_registrationDelete($ciniki, $tnid, $item['id']);
+                    if( $rc['stat'] != 'ok' ) {
+                        return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.235', 'msg'=>'Error trying to remove registration.', 'err'=>$rc['err']));
+                    }
                 }
 
                 //
@@ -651,10 +738,13 @@ function ciniki_writingfestivals_wng_accountRegistrationsProcess(&$ciniki, $tnid
                 }
 
             } else {
-                ciniki_core_loadMethod($ciniki, 'ciniki', 'core', 'private', 'objectDelete');
-                $rc = ciniki_core_objectDelete($ciniki, $tnid, 'ciniki.writingfestivals.registration', $registration['registration_id'], $registration['uuid'], 0x04);
+                //
+                // Delete the registration
+                //
+                ciniki_core_loadMethod($ciniki, 'ciniki', 'writingfestivals', 'private', 'registrationDelete');
+                $rc = ciniki_writingfestivals_registrationDelete($ciniki, $tnid, $item['id']);
                 if( $rc['stat'] != 'ok' ) {
-                    return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.331', 'msg'=>'Unable to remove registration', 'err'=>$rc['err']));
+                    return array('stat'=>'fail', 'err'=>array('code'=>'ciniki.writingfestivals.331', 'msg'=>'Error trying to remove registration.', 'err'=>$rc['err']));
                 }
             }
            

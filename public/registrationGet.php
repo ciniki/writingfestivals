@@ -201,7 +201,7 @@ function ciniki_writingfestivals_registrationGet($ciniki) {
         if( $registration['invoice_id'] > 0 ) {
             ciniki_core_loadMethod($ciniki, 'ciniki', 'sapos', 'hooks', 'invoiceObjectItem');
             $rc = ciniki_sapos_hooks_invoiceObjectItem($ciniki, $args['tnid'], $registration['invoice_id'], 
-                'ciniki.musicfestivals.registration', $registration['id']);
+                'ciniki.writingfestivals.registration', $registration['id']);
             if( $rc['stat'] != 'ok' ) {
                 return $rc;
             }
