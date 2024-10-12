@@ -364,21 +364,21 @@ function ciniki_writingfestivals_wng_registrationFormGenerate(&$ciniki, $tnid, &
     $fields["title"] = array(
         'id' => "title",
         'ftype' => 'text',
-        'flex-basis' => '28em',
+//        'flex-basis' => '28em',
         'class' => '',
         'required' => 'yes',
-        'size' => 'medium',
+        'size' => 'large',
         'label' => 'Title',
         'value' => isset($_POST["f-title"]) ? $_POST["f-title"] : (isset($registration["title"]) ? $registration["title"] : ''),
         );
     $fields["word_count"] = array(
         'id' => "word_count",
-        'flex-basis' => '8em',
+//        'flex-basis' => '14em',
         'required' => 'yes',
         'class' => '',
         'ftype' => 'text',
         'size' => 'small',
-        'label' => 'Word Count',
+        'label' => 'Word Count (Stories & Scripts)/Line Count (Poetry)',
         'value' => isset($_POST["f-word_count"]) ? $_POST["f-word_count"] : (isset($registration["word_count"]) ? $registration["word_count"] : ''),
         );
     $fields["pdf_filename"] = array(
