@@ -17,7 +17,7 @@ function ciniki_writingfestivals_sapos_objectList($ciniki, $tnid) {
         //
         // this object should only be added to carts
         //
-        'ciniki.writingfestivals.registrations' => array(
+        'ciniki.writingfestivals.registration' => array(
             'name' => 'Writing Festival Registration',
             ),
         );
