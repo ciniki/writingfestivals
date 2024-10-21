@@ -65,6 +65,9 @@ function ciniki_writingfestivals_registrationNameUpdate(&$ciniki, $tnid, $regist
     }
     $registration = array_pop($rc['registrations']);
 
+    $display_name = '';
+    $public_name = '';
+
     //
     // Only update display name for non-ensembles
     //
