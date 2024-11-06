@@ -184,17 +184,25 @@ function ciniki_writingfestivals_main() {
         'schedule_sections':{'label':'Schedules', 'type':'simplegrid', 'num_cols':2, 'aside':'yes',
             'visible':function() { return ['schedule', 'comments'].indexOf(M.ciniki_writingfestivals_main.festival.sections._tabs.selected) >= 0 ? 'yes' : 'no'; },
             'cellClasses':['', 'multiline alignright'],
-            'addTxt':'Add Schedule',
-            'addFn':'M.ciniki_writingfestivals_main.schedulesection.open(\'M.ciniki_writingfestivals_main.festival.open();\',0,M.ciniki_writingfestivals_main.festival.festival_id,null);',
+            'menu':{
+                'add':{
+                    'label':'Add Schedule',
+                    'fn':'M.ciniki_writingfestivals_main.schedulesection.open(\'M.ciniki_writingfestivals_main.festival.open();\',0,M.ciniki_writingfestivals_main.festival.festival_id,null);',
+                    },
+                },
             'editFn':function(s, i, d) {
                 return 'M.ciniki_writingfestivals_main.schedulesection.open(\'M.ciniki_writingfestivals_main.festival.open();\',\'' + d.id + '\',M.ciniki_writingfestivals_main.festival.festival_id,null);';
                 },
             },
         'schedule_divisions':{'label':'Divisions', 'type':'simplegrid', 'num_cols':2, 'aside':'yes',
-            'visible':function() { return ['schedule', 'comments'].indexOf(M.ciniki_writingfestivals_main.festival.sections._tabs.selected) >= 0 ? 'yes' : 'no'; },
+            'visible':function() { return ['schedule', 'comments'].indexOf(M.ciniki_writingfestivals_main.festival.sections._tabs.selected) >= 0 && M.ciniki_writingfestivals_main.festival.schedulesection_id > 0 ? 'yes' : 'no'; },
             'cellClasses':['multiline', 'multiline alignright'],
-            'addTxt':'Add Division',
-            'addFn':'M.ciniki_writingfestivals_main.scheduledivision.open(\'M.ciniki_writingfestivals_main.festival.open();\',0,M.ciniki_writingfestivals_main.festival.schedulesection_id,M.ciniki_writingfestivals_main.festival.festival_id,null);',
+            'menu':{
+                'add':{
+                    'label':'Add Division',
+                    'fn':'M.ciniki_writingfestivals_main.scheduledivision.open(\'M.ciniki_writingfestivals_main.festival.open();\',0,M.ciniki_writingfestivals_main.festival.schedulesection_id,M.ciniki_writingfestivals_main.festival.festival_id,null);',
+                    },
+                },
             'editFn':function(s, i, d) {
                 return 'M.ciniki_writingfestivals_main.scheduledivision.open(\'M.ciniki_writingfestivals_main.festival.open();\',\'' + d.id + '\',M.ciniki_writingfestivals_main.festival.schedulesection_id,M.ciniki_writingfestivals_main.festival.festival_id,null);';
                 },
