@@ -58,7 +58,7 @@ function ciniki_writingfestivals_registrationsExcel($ciniki) {
         . "competitors.phone_home, "
         . "competitors.phone_cell, "
         . "competitors.email, "
-        . "competitors.age, "
+        . "competitors.age AS competitor_age, "
         . "competitors.notes "
         . "FROM ciniki_writingfestival_sections AS sections "
         . "LEFT JOIN ciniki_writingfestival_categories AS categories ON ("
@@ -96,7 +96,7 @@ function ciniki_writingfestivals_registrationsExcel($ciniki) {
             ),
         array('container'=>'competitors', 'fname'=>'competitor_id', 
             'fields'=>array('id'=>'competitor_id', 'name'=>'competitor_name', 'parent', 'address', 'city', 'province', 'postal', 
-                'phone_home', 'phone_cell', 'email', 'age', 'notes'),
+                'phone_home', 'phone_cell', 'email', 'age'=>'competitor_age', 'notes'),
             ),
         ));
     if( $rc['stat'] != 'ok' ) {
